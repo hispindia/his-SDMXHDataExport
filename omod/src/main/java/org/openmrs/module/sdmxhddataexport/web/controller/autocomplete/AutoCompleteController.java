@@ -1,14 +1,23 @@
 /**
- * <p> File: org.openmrs.module.sdmxhddataexport.web.controller.autocomplete.AutoCompleteController.java </p>
- * <p> Project: standard-omod </p>
- * <p> Copyright (c) 2011 HISP Technologies. </p>
- * <p> All rights reserved. </p>
- * <p> Author: Nguyen manh chuyen </p>
- * <p> Update by: Nguyen manh chuyen </p>
- * <p> Version: $1.0 </p>
- * <p> Create date: Jan 26, 2011 5:15:41 PM </p>
- * <p> Update date: Jan 26, 2011 5:15:41 PM </p>
+ *  Copyright 2011 Health Information Systems Project of India
+ *
+ *  This file is part of SDMXDataExport module.
+ *
+ *  SDMXDataExport module is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+
+ *  SDMXDataExport module is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with SDMXDataExport module.  If not, see <http://www.gnu.org/licenses/>.
+ *
  **/
+
 
 package org.openmrs.module.sdmxhddataexport.web.controller.autocomplete;
 
