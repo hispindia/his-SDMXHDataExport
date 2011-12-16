@@ -67,9 +67,8 @@ var CHECK =
 			event : "blur",
 			rules : 
 			{
-			
-				"name" : { required : true}
-				
+				"name" : { required : true},
+				"code" : { required : true}
 			}
 		});
 	},

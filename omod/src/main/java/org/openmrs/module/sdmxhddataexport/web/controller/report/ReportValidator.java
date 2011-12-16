@@ -45,6 +45,11 @@ public class ReportValidator implements  Validator {
     	if( StringUtils.isBlank(report.getName())){
     		error.reject("sdmxhddataexport.report.name.required");
     	}
+    	
+    	if( StringUtils.isBlank(report.getCode())){
+    		error.reject("sdmxhddataexport.report.code.required");
+    	}
+    	
     	SDMXHDDataExportService sDMXHDDataExportService = Context.getService(SDMXHDDataExportService.class);
     	Report reportE = sDMXHDDataExportService.getReportByName(report.getName());
     	if(report.getId() != null){

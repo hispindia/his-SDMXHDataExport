@@ -55,6 +55,7 @@
 	<th>#</th>
 	<th>No</th>
 	<th><spring:message code="general.name"/></th>
+	<th><spring:message code="sdmxhddataexport.report.code"/></th>
 	<th><spring:message code="sdmxhddataexport.report.createdOn"/></th>
 	<th><spring:message code="sdmxhddataexport.report.createdBy"/></th>
 	<th></th>
@@ -64,6 +65,7 @@
 		<td><input type="checkbox" name="ids" value="${report.id}"/></td>
 		<td><c:out value="${(( pagingUtil.currentPage - 1  ) * pagingUtil.pageSize ) + varStatus.count }"/></td>	
 		<td><a href="#" onclick="ACT.go('report.form?reportId=${ report.id}');">${report.name}</a> </td>
+		<td>${report.code}</td>
 		<td><openmrs:formatDate date="${report.createdOn}" type="textbox"/></td>
 		<td>${report.createdBy}</td>
 		<td>

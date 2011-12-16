@@ -41,8 +41,6 @@ public class DataElement implements  Serializable {
 	  private Date createdOn;
 	  private String createdBy;
 	  
-	  
-	  
 	@Override
 	public String toString() {
 		return "DataElement [id=" + id + ", name=" + name + ", createdOn="
@@ -72,6 +70,8 @@ public class DataElement implements  Serializable {
 	public void setCreatedBy(String createdBy) {
 		this.createdBy = createdBy;
 	}
+	
+	
 	  
 	  
 

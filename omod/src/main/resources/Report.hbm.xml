@@ -11,6 +11,7 @@
 			<generator class="native" />
 		</id>
 		<property name="name"  />
+		<property name="code"  column="code"/>
 		<property name="createdOn" column="created_on" />
 		<property name="createdBy" column="created_by" />
 		<set name="reportDataElements" table="sdmxhddataexport_report_data_element" cascade="none" lazy="false">
