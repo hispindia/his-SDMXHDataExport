@@ -20,10 +20,22 @@
 
 package org.openmrs.module.sdmxhddataexport.web.controller.report;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.PrintWriter;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.apache.commons.collections.CollectionUtils;
@@ -41,6 +53,7 @@ import org.openmrs.module.sdmxhddataexport.model.ReportDataElementResult;
 import org.openmrs.module.sdmxhddataexport.web.controller.editor.DataElementEditor;
 import org.openmrs.module.sdmxhddataexport.web.controller.editor.QueryEditor;
 import org.openmrs.module.sdmxhddataexport.web.controller.editor.ReportEditor;
+import org.openmrs.module.sdmxhddataexport.web.controller.utils.SDMXHDataExportUtils;
 import org.openmrs.web.WebConstants;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -56,122 +69,215 @@ import org.springframework.web.bind.support.SessionStatus;
 @Controller("SDMXHDDataExportReportDataElementController")
 public class ReportDataElementController {
 	Log log = LogFactory.getLog(this.getClass());
-	 @RequestMapping(value="/module/sdmxhddataexport/reportDataElement.form", method=RequestMethod.GET)
-		public String view(@RequestParam(value="reportDataElementId",required=false) Integer  reportDataElementId,@RequestParam(value="reportId",required=false) Integer  reportId,@ModelAttribute("reportDataElement") ReportDataElement reportDataElement, Model model){
-			SDMXHDDataExportService sDMXHDDataExportService =Context.getService(SDMXHDDataExportService.class);
-			if(reportDataElementId != null){
-				reportDataElement = sDMXHDDataExportService.getReportDataElementById(reportDataElementId);
-				reportId = reportDataElement.getReport().getId();
-				model.addAttribute("reportDataElement",reportDataElement);
-				
-			}
-			model.addAttribute("reportId",reportId);
+	private static SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+
+	@RequestMapping(value = "/module/sdmxhddataexport/reportDataElement.form", method = RequestMethod.GET)
+	public String view(
+			@RequestParam(value = "reportDataElementId", required = false) Integer reportDataElementId,
+			@RequestParam(value = "reportId", required = false) Integer reportId,
+			@ModelAttribute("reportDataElement") ReportDataElement reportDataElement,
+			Model model) {
+		SDMXHDDataExportService sDMXHDDataExportService = Context
+				.getService(SDMXHDDataExportService.class);
+		if (reportDataElementId != null) {
+			reportDataElement = sDMXHDDataExportService
+					.getReportDataElementById(reportDataElementId);
+			reportId = reportDataElement.getReport().getId();
+			model.addAttribute("reportDataElement", reportDataElement);
+
+		}
+		model.addAttribute("reportId", reportId);
+		return "/module/sdmxhddataexport/report/reportDataElement";
+	}
+
+	@RequestMapping(value = "/module/sdmxhddataexport/reportDataElement.form", method = RequestMethod.POST)
+	public String post(
+			@ModelAttribute("reportDataElement") ReportDataElement reportDataElement,
+			BindingResult bindingResult, SessionStatus status, Model model) {
+		new ReportDataElementValidator().validate(reportDataElement,
+				bindingResult);
+		if (bindingResult.hasErrors()) {
 			return "/module/sdmxhddataexport/report/reportDataElement";
+		} else {
+			SDMXHDDataExportService sDMXHDDataExportService = Context
+					.getService(SDMXHDDataExportService.class);
+			reportDataElement.setCreatedOn(new java.util.Date());
+			sDMXHDDataExportService.saveReportDataElement(reportDataElement);
+			status.setComplete();
+			return "redirect:/module/sdmxhddataexport/reportDataElement.form?reportId="
+					+ reportDataElement.getReport().getId();
 		}
-	 
-	 	@RequestMapping(value="/module/sdmxhddataexport/reportDataElement.form", method=RequestMethod.POST)
-		public String post(@ModelAttribute("reportDataElement") ReportDataElement reportDataElement,BindingResult bindingResult, SessionStatus status, Model model){
-			new ReportDataElementValidator().validate(reportDataElement, bindingResult);
-			if (bindingResult.hasErrors()) {
-				return "/module/sdmxhddataexport/report/reportDataElement";
-			}else{
-				SDMXHDDataExportService sDMXHDDataExportService =Context.getService(SDMXHDDataExportService.class);
-				reportDataElement.setCreatedOn(new java.util.Date());
-				sDMXHDDataExportService.saveReportDataElement(reportDataElement);
-				status.setComplete();
-				return "redirect:/module/sdmxhddataexport/reportDataElement.form?reportId="+reportDataElement.getReport().getId();
-			}
-			//return "/module/sdmxhddataexport/report/reportDataElement";
-		}
-	 	
-	 	@RequestMapping(value="/module/sdmxhddataexport/resultExecuteReport.form", method=RequestMethod.GET)
-		public String executeReport(@RequestParam(value="reportId",required=false) Integer  reportId, 
-				@RequestParam(value="startDate",required=false) String  startDate, 
-				@RequestParam(value="endDate",required=false) String  endDate, 
-				Model model){
-			
-				SDMXHDDataExportService sDMXHDDataExportService =Context.getService(SDMXHDDataExportService.class);
-				List<ReportDataElement> list = sDMXHDDataExportService.listReportDataElement(reportId, null, null, 0, 0);
-				
-				if(CollectionUtils.isNotEmpty(list)){
-					List<ReportDataElementResult> results = new ArrayList<ReportDataElementResult>();
-					for(ReportDataElement reportDataElement : list){
-						ReportDataElementResult result = new ReportDataElementResult();
-						result.setDataElement(reportDataElement.getDataElement());
-						result.setId(reportDataElement.getId());
-						result.setReport(reportDataElement.getReport());
-						result.setQuery(reportDataElement.getQuery());
-						result.setResult(sDMXHDDataExportService.executeQuery(reportDataElement.getQuery().getSqlQuery(), startDate, endDate));
-						results.add(result);
-					}
-					model.addAttribute("results", results);
+		// return "/module/sdmxhddataexport/report/reportDataElement";
+	}
+
+	@RequestMapping(value = "/module/sdmxhddataexport/resultExecuteReport.form", method = RequestMethod.GET)
+	public String executeReport(
+			@RequestParam(value = "reportId", required = false) Integer reportId,
+			@RequestParam(value = "startDate", required = false) String startDate,
+			@RequestParam(value = "endDate", required = false) String endDate,
+			Model model) throws ParseException {
+
+		SDMXHDDataExportService sDMXHDDataExportService = Context
+				.getService(SDMXHDDataExportService.class);
+		List<ReportDataElement> list = sDMXHDDataExportService
+				.listReportDataElement(reportId, null, null, 0, 0);
+
+		List<String> periods = new ArrayList<String>();
+		Map<String, List<ReportDataElementResult>> periodResults = new HashMap<String, List<ReportDataElementResult>>();
+		if (CollectionUtils.isNotEmpty(list)) {
+			Date begin = SDMXHDataExportUtils
+					.getFirstDate(sdf.parse(startDate));
+			Date end = SDMXHDataExportUtils.getLastDate(sdf.parse(endDate));
+			SimpleDateFormat periodFormatter = new SimpleDateFormat("yyyyMM");
+			while (begin.before(end)) {
+				periods.add(periodFormatter.format(begin));
+
+				List<ReportDataElementResult> results = new ArrayList<ReportDataElementResult>();
+				for (ReportDataElement reportDataElement : list) {
+					ReportDataElementResult result = new ReportDataElementResult();
+					result.setDataElement(reportDataElement.getDataElement());
+					result.setId(reportDataElement.getId());
+					result.setReport(reportDataElement.getReport());
+					result.setQuery(reportDataElement.getQuery());
+					result.setResult(sDMXHDDataExportService.executeQuery(
+							reportDataElement.getQuery().getSqlQuery(),
+							startDate, endDate));
+					results.add(result);
 				}
-				return "/module/sdmxhddataexport/report/resultExecuteReport";
-			
-			//return "/module/sdmxhddataexport/report/reportDataElement";
+
+				periodResults.put(periodFormatter.format(begin), results);
+				begin = SDMXHDataExportUtils.nextMonth(begin);
+			}
+
+			model.addAttribute("periods", periods);
+			model.addAttribute("periodResults", periodResults);
 		}
-	 	
-	 	@RequestMapping(value="/module/sdmxhddataexport/deleteReportDataElement.form",  method=RequestMethod.POST)
-	    public String deleteReportDataElement(@RequestParam("ids") String[] ids,HttpServletRequest request){
-			String temp = "";
-	    	HttpSession httpSession = request.getSession();
-			Integer reportDataElementId  = null;
-			Integer reportId = null;
-			try{
-				SDMXHDDataExportService sDMXHDDataExportService =Context.getService(SDMXHDDataExportService.class);
-				if( ids != null && ids.length > 0 ){
-					for(String sId : ids )
-					{
-						reportDataElementId = Integer.parseInt(sId);
-						if( reportDataElementId!= null && reportDataElementId > 0)
-						{
-							ReportDataElement reportDataElement =sDMXHDDataExportService.getReportDataElementById(reportDataElementId);
-							sDMXHDDataExportService.deleteReportDataElement(reportDataElement);
-							reportId = reportDataElement.getReport().getId();
-						}else{
-							//temp += "We can't delete store="+store.getName()+" because that store is using please check <br/>";
-							temp = "This reportDataElement cannot be deleted as it is in use";
-						}
+		return "/module/sdmxhddataexport/report/result";
+	}
+
+	@RequestMapping(value = "/module/sdmxhddataexport/downloadExecutedReport.form", method = RequestMethod.GET)
+	public void downloadExecutedReport(
+			@RequestParam(value = "reportId", required = false) Integer reportId,
+			@RequestParam(value = "startDate", required = false) String startDate,
+			@RequestParam(value = "endDate", required = false) String endDate,
+			HttpServletRequest request, HttpServletResponse response)
+			throws ParseException, IOException {
+
+		String urlToRead = "http://" + request.getLocalAddr() + ":"
+				+ request.getLocalPort() + request.getContextPath()
+				+ "/module/sdmxhddataexport/resultExecuteReport.form?reportId="
+				+ reportId + "&startDate=" + startDate + "&endDate=" + endDate;
+		URL url;
+		HttpURLConnection conn;
+		response.setContentType("application/download");
+		response.setHeader("Content-Disposition", "attachment; filename=\""
+				+ "sdmx.xml" + "\"");
+		
+		try {
+			url = new URL(urlToRead);
+			conn = (HttpURLConnection) url.openConnection();
+			conn.setRequestMethod("GET");
+			InputStream rd = conn.getInputStream();
+			byte[] bytes = new byte[1024];
+			int bytesRead;
+			while ((bytesRead = rd.read(bytes)) != -1) {
+			    response.getOutputStream().write(bytes, 0, bytesRead);
+			}
+			rd.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}		
+	}
+
+	@RequestMapping(value = "/module/sdmxhddataexport/extractMonth.form", method = RequestMethod.GET)
+	public void extractMonth(@RequestParam(value = "date") String dateStr,
+			HttpServletResponse response) throws IOException, ParseException {
+		response.setContentType("text/html;charset=UTF-8");
+		PrintWriter out = response.getWriter();
+		Date date = sdf.parse(dateStr);
+		SimpleDateFormat formatter = new SimpleDateFormat("MM/yyyy");
+		out.print(formatter.format(date));
+	}
+
+	@RequestMapping(value = "/module/sdmxhddataexport/deleteReportDataElement.form", method = RequestMethod.POST)
+	public String deleteReportDataElement(@RequestParam("ids") String[] ids,
+			HttpServletRequest request) {
+		String temp = "";
+		HttpSession httpSession = request.getSession();
+		Integer reportDataElementId = null;
+		Integer reportId = null;
+		try {
+			SDMXHDDataExportService sDMXHDDataExportService = Context
+					.getService(SDMXHDDataExportService.class);
+			if (ids != null && ids.length > 0) {
+				for (String sId : ids) {
+					reportDataElementId = Integer.parseInt(sId);
+					if (reportDataElementId != null && reportDataElementId > 0) {
+						ReportDataElement reportDataElement = sDMXHDDataExportService
+								.getReportDataElementById(reportDataElementId);
+						sDMXHDDataExportService
+								.deleteReportDataElement(reportDataElement);
+						reportId = reportDataElement.getReport().getId();
+					} else {
+						// temp +=
+						// "We can't delete store="+store.getName()+" because that store is using please check <br/>";
+						temp = "This reportDataElement cannot be deleted as it is in use";
 					}
 				}
-			}catch (Exception e) {
-				httpSession.setAttribute(WebConstants.OPENMRS_MSG_ATTR,
-				"Can not delete reportDataElement ");
-				log.error(e);
 			}
-			httpSession.setAttribute(WebConstants.OPENMRS_MSG_ATTR, StringUtils.isBlank(temp) ?  "sdmxhddataexport.reportDataElement.deleted" : temp);
-	    	
-	    	return "redirect:/module/sdmxhddataexport/reportDataElement.form?reportId="+reportId;
-	    }
-	 	@InitBinder
-		public void initBinder(WebDataBinder binder) {
-			binder.registerCustomEditor(Report.class, new ReportEditor());
-			binder.registerCustomEditor(Query.class, new QueryEditor());
-			binder.registerCustomEditor(DataElement.class, new DataElementEditor());
-	 	}
-	 @ModelAttribute("reportDataElements")
-	 public List<ReportDataElement> reportDataElements(HttpServletRequest request){
-		 SDMXHDDataExportService sDMXHDDataExportService =Context.getService(SDMXHDDataExportService.class);
-		 Integer reportId = NumberUtils.toInt(request.getParameter("reportId"), 0 );
-		 List<ReportDataElement> reportDataElements = sDMXHDDataExportService.listReportDataElement(reportId, null, null, 0, 0);
-		 return reportDataElements;
-	 }
-	 @ModelAttribute("reports")
-	 public List<Report> reports(){
-		 SDMXHDDataExportService sDMXHDDataExportService =Context.getService(SDMXHDDataExportService.class);
-		 List<Report> reports = sDMXHDDataExportService.listReport("", 0, 0);
-		 return reports;
-	 }
-	 @ModelAttribute("queries")
-	 public List<Query> queries(){
-		 SDMXHDDataExportService sDMXHDDataExportService =Context.getService(SDMXHDDataExportService.class);
-		 List<Query> queries = sDMXHDDataExportService.listQuery("", 0, 0);
-		 return queries;
-	 }
-	 @ModelAttribute("dataElements")
-	 public List<DataElement> dataelements(){
-		 SDMXHDDataExportService sDMXHDDataExportService =Context.getService(SDMXHDDataExportService.class);
-		 List<DataElement> dataelements = sDMXHDDataExportService.listDataElement("", 0, 0);
-		 return dataelements;
-	 }
+		} catch (Exception e) {
+			httpSession.setAttribute(WebConstants.OPENMRS_MSG_ATTR,
+					"Can not delete reportDataElement ");
+			log.error(e);
+		}
+		httpSession.setAttribute(WebConstants.OPENMRS_MSG_ATTR, StringUtils
+				.isBlank(temp) ? "sdmxhddataexport.reportDataElement.deleted"
+				: temp);
+
+		return "redirect:/module/sdmxhddataexport/reportDataElement.form?reportId="
+				+ reportId;
+	}
+
+	@InitBinder
+	public void initBinder(WebDataBinder binder) {
+		binder.registerCustomEditor(Report.class, new ReportEditor());
+		binder.registerCustomEditor(Query.class, new QueryEditor());
+		binder.registerCustomEditor(DataElement.class, new DataElementEditor());
+	}
+
+	@ModelAttribute("reportDataElements")
+	public List<ReportDataElement> reportDataElements(HttpServletRequest request) {
+		SDMXHDDataExportService sDMXHDDataExportService = Context
+				.getService(SDMXHDDataExportService.class);
+		Integer reportId = NumberUtils.toInt(request.getParameter("reportId"),
+				0);
+		List<ReportDataElement> reportDataElements = sDMXHDDataExportService
+				.listReportDataElement(reportId, null, null, 0, 0);
+		return reportDataElements;
+	}
+
+	@ModelAttribute("reports")
+	public List<Report> reports() {
+		SDMXHDDataExportService sDMXHDDataExportService = Context
+				.getService(SDMXHDDataExportService.class);
+		List<Report> reports = sDMXHDDataExportService.listReport("", 0, 0);
+		return reports;
+	}
+
+	@ModelAttribute("queries")
+	public List<Query> queries() {
+		SDMXHDDataExportService sDMXHDDataExportService = Context
+				.getService(SDMXHDDataExportService.class);
+		List<Query> queries = sDMXHDDataExportService.listQuery("", 0, 0);
+		return queries;
+	}
+
+	@ModelAttribute("dataElements")
+	public List<DataElement> dataelements() {
+		SDMXHDDataExportService sDMXHDDataExportService = Context
+				.getService(SDMXHDDataExportService.class);
+		List<DataElement> dataelements = sDMXHDDataExportService
+				.listDataElement("", 0, 0);
+		return dataelements;
+	}
 }

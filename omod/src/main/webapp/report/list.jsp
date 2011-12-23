@@ -92,13 +92,17 @@
 	<tr>
 		<td><spring:message code="sdmxhddataexport.startDate"/><em>*</em></td>
 		<td>
-			<input type="text" name="startDate" id="startDate" value="${startDate }" class="date-pick left" readonly="readonly"  ondblclick="this.value='';"/>
+			<input type="text" name="startDate" id="startDate" value="${startDate }" class="date-pick left" readonly="readonly"  ondblclick="this.value='';" onChange="SDMXHDDataExport.extractMonth(this.value, true);"/>
+		</td>
+		<td id="fromMonth">
 		</td>
 	</tr>
 	<tr>
 		<td><spring:message code="sdmxhddataexport.endDate"/><em>*</em></td>
 		<td>
-			<input type="text" name="endDate" id="endDate" value="${endDate }"  class="date-pick left" readonly="readonly"  ondblclick="this.value='';"/>
+			<input type="text" name="endDate" id="endDate" value="${endDate }"  class="date-pick left" readonly="readonly"  ondblclick="this.value='';" onChange="SDMXHDDataExport.extractMonth(this.value, false);"/>
+		</td>
+		<td id="toMonth">
 		</td>
 	</tr>
 	

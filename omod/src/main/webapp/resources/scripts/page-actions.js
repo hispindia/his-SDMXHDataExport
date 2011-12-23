@@ -174,16 +174,25 @@ var CHECK =
 			width: '40%',
 			buttons: {
 				"Run": function() {
-					var data = jQuery.ajax(
-							{
-								type:"GET"
-								,url: "resultExecuteReport.form"
-								,data: ({startDate :jQuery("#startDate").val(),endDate : jQuery("#endDate").val(), reportId : jQuery("#reportId").val(),})	
-								,async: false
-								, cache : false
-							}).responseText;
-					jQuery("#divResults").html(data);
-					
+					window.location.href = openmrsContextPath + "/module/sdmxhddataexport/downloadExecutedReport.form?reportId=" + jQuery("#reportId").val() + "&startDate=" + jQuery("#startDate").val() + "&endDate=" + jQuery("#endDate").val();
+					// var data = jQuery.ajax(
+							// {
+								// type:"GET"
+								// ,url: "resultExecuteReport.form"
+								// ,data: ({startDate :jQuery("#startDate").val(),endDate : jQuery("#endDate").val(), reportId : jQuery("#reportId").val(),})	
+								// ,async: false
+								// , cache : false
+							// }).responseText;
+					// jQuery("#divResults").html(data);
+					// jQuery.ajax({
+						// type : "GET",				
+						// url : "downloadExecutedReport.form",
+						// data : ({
+							// startDate :jQuery("#startDate").val(),
+							// endDate : jQuery("#endDate").val(), 
+							// reportId : jQuery("#reportId").val()
+						// })
+					// });
 				},
 				Close: function() {
 					jQuery("#divResults").html("");

@@ -48,6 +48,26 @@ SDMXHDDataExport = {
 		showQuery : function(queryId){
 			jQuery("#queryId").val(queryId);
 			jQuery('#excecuteQuery').dialog('open');
+		},
+		extractMonth: function(date, from){
+			jQuery.ajax({
+				type : "GET",				
+				url : "extractMonth.form",
+				data : ({
+					date: date
+				}),
+				success : function(data) {
+					if(from){
+						jQuery("#fromMonth").html("<b>From month: </b>" + data);
+					} else {
+						jQuery("#toMonth").html("<b>To month:     </b>" + data);
+					}
+					
+				},
+				error : function(xhr, ajaxOptions, thrownError) {
+					alert("ERROR " + xhr);
+				}
+			});
 		}
 		
 		
