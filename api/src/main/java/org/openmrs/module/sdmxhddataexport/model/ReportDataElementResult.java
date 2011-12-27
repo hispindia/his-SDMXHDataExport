@@ -20,9 +20,23 @@
 
 package org.openmrs.module.sdmxhddataexport.model;
 
+import java.util.Date;
+
 public class ReportDataElementResult extends ReportDataElement{
 
+	private static final long serialVersionUID = 1L;
 	private Integer result;
+	
+	public ReportDataElementResult(){
+		
+	}
+	
+	public ReportDataElementResult(ReportDataElement reportDataElement){
+		this.setCreatedOn(new Date());
+		this.setDataElement(reportDataElement.getDataElement());
+		this.setQuery(reportDataElement.getQuery());
+		this.setReport(reportDataElement.getReport());		
+	}
 
 	public Integer getResult() {
 		return result;

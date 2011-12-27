@@ -47,6 +47,15 @@
 		<name>Manage SDMXHDDataExport</name>
 		<description>Allows user to manage SDMXHDDataExport</description>
 	</privilege>
+	
+	<globalProperty>
+		<property>@MODULE_ID@.organisationUnit</property>
+		<defaultValue>DDU Hospital</defaultValue>
+		<description>
+			Organisation unit 
+		</description>
+	</globalProperty>
+	
 	<!-- Required Global Properties 
 	
 	<globalProperty>

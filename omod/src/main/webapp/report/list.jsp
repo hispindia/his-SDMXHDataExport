@@ -1,3 +1,22 @@
+ <%--
+ *  Copyright 2009 Society for Health Information Systems Programmes, India (HISP India)
+ *
+ *  This file is part of SDMXHDataExport module.
+ *
+ *  SDMXHDataExport module is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+
+ *  SDMXHDataExport module is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with SDMXHDataExport module.  If not, see <http://www.gnu.org/licenses/>.
+ *
+--%> 
 <%@ include file="/WEB-INF/template/include.jsp" %>
 
 <openmrs:require privilege="View SDMXHDDataExport" otherwise="/login.htm" redirect="/module/sdmxhddataexport/listReport.form" />
@@ -36,6 +55,7 @@
 	<th>#</th>
 	<th>No</th>
 	<th><spring:message code="general.name"/></th>
+	<th><spring:message code="sdmxhddataexport.report.code"/></th>
 	<th><spring:message code="sdmxhddataexport.report.createdOn"/></th>
 	<th><spring:message code="sdmxhddataexport.report.createdBy"/></th>
 	<th></th>
@@ -45,6 +65,7 @@
 		<td><input type="checkbox" name="ids" value="${report.id}"/></td>
 		<td><c:out value="${(( pagingUtil.currentPage - 1  ) * pagingUtil.pageSize ) + varStatus.count }"/></td>	
 		<td><a href="#" onclick="ACT.go('report.form?reportId=${ report.id}');">${report.name}</a> </td>
+		<td>${report.code}</td>
 		<td><openmrs:formatDate date="${report.createdOn}" type="textbox"/></td>
 		<td>${report.createdBy}</td>
 		<td>
@@ -71,13 +92,17 @@
 	<tr>
 		<td><spring:message code="sdmxhddataexport.startDate"/><em>*</em></td>
 		<td>
-			<input type="text" name="startDate" id="startDate" value="${startDate }" class="date-pick left" readonly="readonly"  ondblclick="this.value='';"/>
+			<input type="text" name="startDate" id="startDate" value="${startDate }" class="date-pick left" readonly="readonly"  ondblclick="this.value='';" onChange="SDMXHDDataExport.extractMonth(this.value, true);"/>
+		</td>
+		<td id="fromMonth">
 		</td>
 	</tr>
 	<tr>
 		<td><spring:message code="sdmxhddataexport.endDate"/><em>*</em></td>
 		<td>
-			<input type="text" name="endDate" id="endDate" value="${endDate }"  class="date-pick left" readonly="readonly"  ondblclick="this.value='';"/>
+			<input type="text" name="endDate" id="endDate" value="${endDate }"  class="date-pick left" readonly="readonly"  ondblclick="this.value='';" onChange="SDMXHDDataExport.extractMonth(this.value, false);"/>
+		</td>
+		<td id="toMonth">
 		</td>
 	</tr>
 	

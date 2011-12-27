@@ -200,7 +200,7 @@ public class SDMXHDDataExportServiceImpl  extends BaseOpenmrsService implements 
 	}
 
 	
-	public Integer executeQuery(String query,String startDate, String endDate) throws DAOException{
+	public Integer executeQuery(String query, String startDate, String endDate) throws DAOException{
 		return dao.executeQuery(query, startDate, endDate);
 	}
 

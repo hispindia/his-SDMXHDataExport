@@ -27,6 +27,30 @@
 			
 		</sql>
 	</diff>	
+	
+	<diff>
+		<version>0.2</version>
+		<author>Truong Ha</author>
+		<date>Dec 16th 2011</date>
+		<description>
+			Added column code into table sdmxhddataexport_report
+		</description>
+		<sql>
+			ALTER TABLE sdmxhddataexport_report ADD code varchar(255) DEFAULT NULL;
+		</sql>
+	</diff>	
+	
+	<diff>
+		<version>0.3</version>
+		<author>Truong Ha</author>
+		<date>Dec 22th 2011</date>
+		<description>
+			Added column code into table sdmxhddataexport_data_element
+		</description>
+		<sql>
+			ALTER TABLE sdmxhddataexport_data_element ADD code varchar(255) DEFAULT NULL;
+		</sql>
+	</diff>	
 
 	
 </sqldiff>

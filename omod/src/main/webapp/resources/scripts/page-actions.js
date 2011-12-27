@@ -1,4 +1,22 @@
+/**
+ *  Copyright 2009 Society for Health Information Systems Programmes, India (HISP India)
+ *
+ *  This file is part of SDMXHDataExport module.
+ *
+ *  SDMXHDataExport module is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
 
+ *  SDMXHDataExport module is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with SDMXHDataExport module.  If not, see <http://www.gnu.org/licenses/>.
+ *
+*/
 
 var EVT =
 {
@@ -49,9 +67,8 @@ var CHECK =
 			event : "blur",
 			rules : 
 			{
-			
-				"name" : { required : true}
-				
+				"name" : { required : true},
+				"code" : { required : true}
 			}
 		});
 	},
@@ -157,16 +174,25 @@ var CHECK =
 			width: '40%',
 			buttons: {
 				"Run": function() {
-					var data = jQuery.ajax(
-							{
-								type:"GET"
-								,url: "resultExecuteReport.form"
-								,data: ({startDate :jQuery("#startDate").val(),endDate : jQuery("#endDate").val(), reportId : jQuery("#reportId").val(),})	
-								,async: false
-								, cache : false
-							}).responseText;
-					jQuery("#divResults").html(data);
-					
+					window.location.href = openmrsContextPath + "/module/sdmxhddataexport/downloadExecutedReport.form?reportId=" + jQuery("#reportId").val() + "&startDate=" + jQuery("#startDate").val() + "&endDate=" + jQuery("#endDate").val();
+					// var data = jQuery.ajax(
+							// {
+								// type:"GET"
+								// ,url: "resultExecuteReport.form"
+								// ,data: ({startDate :jQuery("#startDate").val(),endDate : jQuery("#endDate").val(), reportId : jQuery("#reportId").val(),})	
+								// ,async: false
+								// , cache : false
+							// }).responseText;
+					// jQuery("#divResults").html(data);
+					// jQuery.ajax({
+						// type : "GET",				
+						// url : "downloadExecutedReport.form",
+						// data : ({
+							// startDate :jQuery("#startDate").val(),
+							// endDate : jQuery("#endDate").val(), 
+							// reportId : jQuery("#reportId").val()
+						// })
+					// });
 				},
 				Close: function() {
 					jQuery("#divResults").html("");
