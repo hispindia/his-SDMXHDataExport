@@ -55,6 +55,15 @@
 			</spring:bind>
 		</td>
 	</tr>
+	<tr>
+		<td>Code<em>*</em></td>
+		<td>
+			<spring:bind path="dataElement.code">				
+				<input type="text" name="${status.expression}" id="${status.expression}" value="${status.value}" size="60" />
+				<c:if test="${status.errorMessage != ''}"><span class="error">${status.errorMessage}</span></c:if>
+			</spring:bind>
+		</td>
+	</tr>
 </table>
 <br />
 <input type="submit" class="ui-button ui-widget ui-state-default ui-corner-all" value="<spring:message code="general.save"/>">

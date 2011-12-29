@@ -18,6 +18,7 @@
  *
 --%> 
 <%@ include file="/WEB-INF/template/include.jsp" %>
+<openmrs:globalProperty key="sdmxhddataexport.organisationUnit" var="organisationUnit"/>
 <?xml version="1.0"?>
 <CrossSectionalData xmlns="http://www.SDMX.org/resources/SDMXML/schemas/v2_0/message" 
   xmlns:ns="urn:sdmx:org.sdmx.infomodel.keyfamily.KeyFamily=HP_MOH:<DATASET_CODE>:1.0:cross" >
@@ -37,7 +38,7 @@
 	<ns:Group VALUE_TYPE="0" FREQ="M" TIME_PERIOD="${period}">
 		<ns:Section>
 		<c:forEach items="${periodResults[period]}" var="result">
-			<OBS_VALUE FACILITY="<ORGANIZATION_UNIT_CODE>" DATAELEMENT="<DATAELEMENT_CODE>" value="${result.result}"/>			
+			<OBS_VALUE FACILITY="${organisationUnit}" DATAELEMENT="${result.dataElement.code}" value="${result.result}"/>			
 		</c:forEach>
 		</ns:Section>
 	</ns:Group>

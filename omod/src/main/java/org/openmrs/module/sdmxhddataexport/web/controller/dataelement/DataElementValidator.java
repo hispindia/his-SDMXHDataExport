@@ -45,6 +45,9 @@ public class DataElementValidator implements  Validator {
     	if( StringUtils.isBlank(dataElement.getName())){
     		error.reject("sdmxhddataexport.dataElement.name.required");
     	}
+    	if( StringUtils.isBlank(dataElement.getCode())){
+    		error.reject("sdmxhddataexport.dataElement.code.required");
+    	}
     	SDMXHDDataExportService inventoryService = Context.getService(SDMXHDDataExportService.class);
     	DataElement dataElementE = inventoryService.getDataElementByName(dataElement.getName());
     	if(dataElement.getId() != null){
