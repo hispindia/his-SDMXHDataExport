@@ -21,7 +21,7 @@
 		</description>
 		<sql>
 			CREATE TABLE IF NOT EXISTS  sdmxhddataexport_data_element (id integer not null auto_increment, name varchar(255), created_on datetime, created_by varchar(255), primary key (id));
-			CREATE TABLE IF NOT EXISTS  sdmxhddataexport_query (id integer not null auto_increment, name varchar(255), sql_query varchar(255), created_on datetime, created_by varchar(255), primary key (id));
+			CREATE TABLE IF NOT EXISTS  sdmxhddataexport_query (id integer not null auto_increment, name varchar(255), sql_query text, created_on datetime, created_by varchar(255), primary key (id));
 			CREATE TABLE IF NOT EXISTS  sdmxhddataexport_report (id integer not null auto_increment, name varchar(255), created_on datetime, created_by varchar(255), primary key (id));
 			CREATE TABLE IF NOT EXISTS  sdmxhddataexport_report_data_element (id integer not null auto_increment, report_id integer, query_id integer, data_element_id integer, primary key (id));
 			

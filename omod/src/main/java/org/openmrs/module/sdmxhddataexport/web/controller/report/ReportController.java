@@ -67,7 +67,7 @@ public class ReportController {
 			}else{
 				SDMXHDDataExportService sDMXHDDataExportService =Context.getService(SDMXHDDataExportService.class);
 				report.setCreatedOn(new java.util.Date());
-				if(report.getId() > 0){
+				if(report.getId() != null){
 					report.setReportDataElements(sDMXHDDataExportService.getReportById(report.getId()).getReportDataElements());
 				}
 				report.setCreatedBy(Context.getAuthenticatedUser().getGivenName());

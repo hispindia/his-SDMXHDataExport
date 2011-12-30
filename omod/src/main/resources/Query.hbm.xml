@@ -10,7 +10,7 @@
 			<generator class="native" />
 		</id>
 		<property name="name"  />
-		<property name="sqlQuery"  column="sql_query"/>
+		<property name="sqlQuery"  column="sql_query" />
 		<property name="createdOn" column="created_on" />
 		<property name="createdBy" column="created_by" />
 	</class>
