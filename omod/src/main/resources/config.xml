@@ -50,7 +50,7 @@
 	
 	<globalProperty>
 		<property>@MODULE_ID@.organisationUnit</property>
-		<defaultValue>DDU Hospital</defaultValue>
+		<defaultValue>DDU</defaultValue>
 		<description>
 			Organisation unit 
 		</description>
