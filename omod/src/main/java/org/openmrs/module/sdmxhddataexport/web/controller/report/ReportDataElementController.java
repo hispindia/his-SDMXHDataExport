@@ -20,7 +20,6 @@
 
 package org.openmrs.module.sdmxhddataexport.web.controller.report;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
@@ -119,12 +118,12 @@ public class ReportDataElementController {
 
 		SDMXHDDataExportService sDMXHDDataExportService = Context
 				.getService(SDMXHDDataExportService.class);
-		List<ReportDataElement> list = sDMXHDDataExportService
-				.listReportDataElement(reportId, null, null, 0, 0);
-
+		List<ReportDataElement> list = sDMXHDDataExportService.listReportDataElement(reportId, null, null, 0, 0);
+		String DATASET_CODE = "";
 		List<String> periods = new ArrayList<String>();
 		Map<String, List<ReportDataElementResult>> periodResults = new HashMap<String, List<ReportDataElementResult>>();
 		if (CollectionUtils.isNotEmpty(list)) {
+			DATASET_CODE = list.get(0).getReport().getCode();
 			Date begin = SDMXHDataExportUtils
 					.getFirstDate(sdf.parse(startDate));
 			Date end = SDMXHDataExportUtils.getLastDate(sdf.parse(endDate));
@@ -148,9 +147,12 @@ public class ReportDataElementController {
 				periodResults.put(periodFormatter.format(begin), results);
 				begin = SDMXHDataExportUtils.nextMonth(begin);
 			}
-
+			String tmp = Context.getAdministrationService().getGlobalProperty("sdmxhddataexport.organisationUnit");
+			System.out.println("tmp: "+tmp);
+			model.addAttribute("DATASET_CODE", DATASET_CODE);
 			model.addAttribute("periods", periods);
 			model.addAttribute("periodResults", periodResults);
+			model.addAttribute("abc",tmp);
 		}
 		return "/module/sdmxhddataexport/report/result";
 	}

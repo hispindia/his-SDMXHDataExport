@@ -21,7 +21,7 @@
 <openmrs:globalProperty key="sdmxhddataexport.organisationUnit" var="organisationUnit"/>
 <?xml version="1.0"?>
 <CrossSectionalData xmlns="http://www.SDMX.org/resources/SDMXML/schemas/v2_0/message" 
-  xmlns:ns="urn:sdmx:org.sdmx.infomodel.keyfamily.KeyFamily=HP_MOH:<DATASET_CODE>:1.0:cross" >
+  xmlns:ns="urn:sdmx:org.sdmx.infomodel.keyfamily.KeyFamily=HP_MOH:${DATASET_CODE}:1.0:cross" >
   
   <Header>
     <ID>SDMX-HD-CSDS</ID>
@@ -38,7 +38,7 @@
 	<ns:Group VALUE_TYPE="0" FREQ="M" TIME_PERIOD="${period}">
 		<ns:Section>
 		<c:forEach items="${periodResults[period]}" var="result">
-			<OBS_VALUE FACILITY="${organisationUnit}" DATAELEMENT="${result.dataElement.code}" value="${result.result}"/>			
+			<OBS_VALUE FACILITY="${abc}" DATAELEMENT="${result.dataElement.code}" value="${result.result}"/>			
 		</c:forEach>
 		</ns:Section>
 	</ns:Group>
