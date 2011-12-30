@@ -20,7 +20,6 @@
 
 package org.openmrs.module.sdmxhddataexport.web.controller.report;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
@@ -181,7 +180,9 @@ public class ReportDataElementController {
 			byte[] bytes = new byte[1024];
 			int bytesRead;
 			while ((bytesRead = rd.read(bytes)) != -1) {
-			    response.getOutputStream().write(bytes, 0, bytesRead);
+				String str = new String(bytes);
+				str = str.substring(0, bytesRead).trim();
+				response.getOutputStream().write(str.getBytes(), 0, str.getBytes().length);				
 			}
 			rd.close();
 		} catch (Exception e) {
