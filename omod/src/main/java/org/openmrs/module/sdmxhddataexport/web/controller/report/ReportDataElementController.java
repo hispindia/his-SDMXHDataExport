@@ -147,12 +147,11 @@ public class ReportDataElementController {
 				periodResults.put(periodFormatter.format(begin), results);
 				begin = SDMXHDataExportUtils.nextMonth(begin);
 			}
-			String tmp = Context.getAdministrationService().getGlobalProperty("sdmxhddataexport.organisationUnit");
-			System.out.println("tmp: "+tmp);
+			String orgunitCode = Context.getAdministrationService().getGlobalProperty("sdmxhddataexport.organisationUnit");
 			model.addAttribute("DATASET_CODE", DATASET_CODE);
 			model.addAttribute("periods", periods);
 			model.addAttribute("periodResults", periodResults);
-			model.addAttribute("abc",tmp);
+			model.addAttribute("orgunit",orgunitCode);
 		}
 		return "/module/sdmxhddataexport/report/result";
 	}
