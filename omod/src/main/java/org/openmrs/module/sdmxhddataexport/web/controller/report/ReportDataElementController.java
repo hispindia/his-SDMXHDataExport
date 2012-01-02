@@ -152,7 +152,7 @@ public class ReportDataElementController {
 			model.addAttribute("DATASET_CODE", DATASET_CODE);
 			model.addAttribute("periods", periods);
 			model.addAttribute("periodResults", periodResults);
-			model.addAttribute("abc",tmp);
+			model.addAttribute("ogUnit",tmp);
 		}
 		return "/module/sdmxhddataexport/report/result";
 	}

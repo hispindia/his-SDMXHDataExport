@@ -38,7 +38,7 @@
 	<ns:Group VALUE_TYPE="0" FREQ="M" TIME_PERIOD="${period}">
 		<ns:Section>
 		<c:forEach items="${periodResults[period]}" var="result">
-			<OBS_VALUE FACILITY="${abc}" DATAELEMENT="${result.dataElement.code}" value="${result.result}"/>			
+			<OBS_VALUE FACILITY="${ogUnit}" DATAELEMENT="${result.dataElement.code}" value="${result.result}"/>			
 		</c:forEach>
 		</ns:Section>
 	</ns:Group>
