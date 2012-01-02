@@ -126,11 +126,11 @@ public class ReportDataElementController {
 			DATASET_CODE = list.get(0).getReport().getCode();
 			Date begin = SDMXHDataExportUtils
 					.getFirstDate(sdf.parse(startDate));
-			Date end = SDMXHDataExportUtils.getLastDate(sdf.parse(endDate));
+			Date end = SDMXHDataExportUtils.getLastDate(begin);
 			SimpleDateFormat periodFormatter = new SimpleDateFormat("yyyyMM");
-			while (begin.before(end)) {
+			Date finalDate = SDMXHDataExportUtils.getLastDate(sdf.parse(endDate));
+			while (begin.before(finalDate)) {
 				periods.add(periodFormatter.format(begin));
-
 				List<ReportDataElementResult> results = new ArrayList<ReportDataElementResult>();
 				for (ReportDataElement reportDataElement : list) {
 					ReportDataElementResult result = new ReportDataElementResult();
@@ -140,12 +140,13 @@ public class ReportDataElementController {
 					result.setQuery(reportDataElement.getQuery());
 					result.setResult(sDMXHDDataExportService.executeQuery(
 							reportDataElement.getQuery().getSqlQuery(),
-							startDate, endDate));
+							sdf.format(begin), sdf.format(end)));
 					results.add(result);
 				}
 
 				periodResults.put(periodFormatter.format(begin), results);
 				begin = SDMXHDataExportUtils.nextMonth(begin);
+				end = SDMXHDataExportUtils.getLastDate(begin);
 			}
 			String orgunitCode = Context.getAdministrationService().getGlobalProperty("sdmxhddataexport.organisationUnit");
 			model.addAttribute("DATASET_CODE", DATASET_CODE);
