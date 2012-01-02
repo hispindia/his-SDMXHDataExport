@@ -118,12 +118,12 @@ public class ReportDataElementController {
 
 		SDMXHDDataExportService sDMXHDDataExportService = Context
 				.getService(SDMXHDDataExportService.class);
-		List<ReportDataElement> list = sDMXHDDataExportService
-				.listReportDataElement(reportId, null, null, 0, 0);
-
+		List<ReportDataElement> list = sDMXHDDataExportService.listReportDataElement(reportId, null, null, 0, 0);
+		String DATASET_CODE = "";
 		List<String> periods = new ArrayList<String>();
 		Map<String, List<ReportDataElementResult>> periodResults = new HashMap<String, List<ReportDataElementResult>>();
 		if (CollectionUtils.isNotEmpty(list)) {
+			DATASET_CODE = list.get(0).getReport().getCode();
 			Date begin = SDMXHDataExportUtils
 					.getFirstDate(sdf.parse(startDate));
 			Date end = SDMXHDataExportUtils.getLastDate(sdf.parse(endDate));
@@ -147,48 +147,51 @@ public class ReportDataElementController {
 				periodResults.put(periodFormatter.format(begin), results);
 				begin = SDMXHDataExportUtils.nextMonth(begin);
 			}
-
+			String tmp = Context.getAdministrationService().getGlobalProperty("sdmxhddataexport.organisationUnit");
+			System.out.println("tmp: "+tmp);
+			model.addAttribute("DATASET_CODE", DATASET_CODE);
 			model.addAttribute("periods", periods);
 			model.addAttribute("periodResults", periodResults);
+			model.addAttribute("abc",tmp);
 		}
 		return "/module/sdmxhddataexport/report/result";
 	}
 
-	@RequestMapping(value = "/module/sdmxhddataexport/downloadExecutedReport.form", method = RequestMethod.GET)
-	public void downloadExecutedReport(
-			@RequestParam(value = "reportId", required = false) Integer reportId,
-			@RequestParam(value = "startDate", required = false) String startDate,
-			@RequestParam(value = "endDate", required = false) String endDate,
-			HttpServletRequest request, HttpServletResponse response)
-			throws ParseException, IOException {
+	 @RequestMapping(value = "/module/sdmxhddataexport/downloadExecutedReport.form", method = RequestMethod.GET)
+     public void downloadExecutedReport(
+                     @RequestParam(value = "reportId", required = false) Integer reportId,
+                     @RequestParam(value = "startDate", required = false) String startDate,
+                     @RequestParam(value = "endDate", required = false) String endDate,
+                     HttpServletRequest request, HttpServletResponse response)
+                     throws ParseException, IOException {
 
-		String urlToRead = "http://" + request.getLocalAddr() + ":"
-				+ request.getLocalPort() + request.getContextPath()
-				+ "/module/sdmxhddataexport/resultExecuteReport.form?reportId="
-				+ reportId + "&startDate=" + startDate + "&endDate=" + endDate;
-		URL url;
-		HttpURLConnection conn;
-		response.setContentType("application/download");
-		response.setHeader("Content-Disposition", "attachment; filename=\""
-				+ "sdmx.xml" + "\"");
-		
-		try {
-			url = new URL(urlToRead);
-			conn = (HttpURLConnection) url.openConnection();
-			conn.setRequestMethod("GET");
-			InputStream rd = conn.getInputStream();
-			byte[] bytes = new byte[1024];
-			int bytesRead;
-			while ((bytesRead = rd.read(bytes)) != -1) {
-				String str = new String(bytes);
-				str = str.substring(0, bytesRead).trim();
-				response.getOutputStream().write(str.getBytes(), 0, str.getBytes().length);				
-			}
-			rd.close();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}		
-	}
+             String urlToRead = "http://" + request.getLocalAddr() + ":"
+                             + request.getLocalPort() + request.getContextPath()
+                             + "/module/sdmxhddataexport/resultExecuteReport.form?reportId="
+                             + reportId + "&startDate=" + startDate + "&endDate=" + endDate;
+             URL url;
+             HttpURLConnection conn;
+             response.setContentType("application/download");
+             response.setHeader("Content-Disposition", "attachment; filename=\""
+                             + "sdmx.xml" + "\"");
+             
+             try {
+                     url = new URL(urlToRead);
+                     conn = (HttpURLConnection) url.openConnection();
+                     conn.setRequestMethod("GET");
+                     InputStream rd = conn.getInputStream();
+                     byte[] bytes = new byte[1024];
+                     int bytesRead;
+                     while ((bytesRead = rd.read(bytes)) != -1) {
+                             String str = new String(bytes);
+                             str = str.substring(0, bytesRead).trim();
+                             response.getOutputStream().write(str.getBytes(), 0, str.getBytes().length);                                
+                     }
+                     rd.close();
+             } catch (Exception e) {
+                     e.printStackTrace();
+             }                
+     }
 
 	@RequestMapping(value = "/module/sdmxhddataexport/extractMonth.form", method = RequestMethod.GET)
 	public void extractMonth(@RequestParam(value = "date") String dateStr,
