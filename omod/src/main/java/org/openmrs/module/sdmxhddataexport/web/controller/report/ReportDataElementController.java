@@ -149,10 +149,12 @@ public class ReportDataElementController {
 				end = SDMXHDataExportUtils.getLastDate(begin);
 			}
 			String orgunitCode = Context.getAdministrationService().getGlobalProperty("sdmxhddataexport.organisationUnit");
+			SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
 			model.addAttribute("DATASET_CODE", DATASET_CODE);
 			model.addAttribute("periods", periods);
 			model.addAttribute("periodResults", periodResults);
 			model.addAttribute("orgunit",orgunitCode);
+			model.addAttribute("prepared",formatter.format(new Date()));
 		}
 		return "/module/sdmxhddataexport/report/result";
 	}
@@ -172,8 +174,9 @@ public class ReportDataElementController {
              URL url;
              HttpURLConnection conn;
              response.setContentType("application/download");
+             SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd-hh-mm-ss");
              response.setHeader("Content-Disposition", "attachment; filename=\""
-                             + "sdmx.xml" + "\"");
+                             + "sdmxhd-" + formatter.format(new Date()) + ".xml" + "\"");
              
              try {
                      url = new URL(urlToRead);

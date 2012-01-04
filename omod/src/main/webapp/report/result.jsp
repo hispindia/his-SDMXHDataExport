@@ -28,7 +28,7 @@
     <Test>true</Test>
     <Truncated>false</Truncated>
     <Name xml:lang="en">Sample SDMX-HD Export</Name>
-    <Prepared>2011-09-07T18:30:42-04:00</Prepared>
+    <Prepared>${prepared}</Prepared>
     <Sender id="OpenMRS">
       <Name>OpenMRS</Name>
     </Sender>
