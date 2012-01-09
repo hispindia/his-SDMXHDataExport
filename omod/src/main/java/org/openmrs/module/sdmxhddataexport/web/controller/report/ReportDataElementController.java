@@ -115,11 +115,14 @@ public class ReportDataElementController {
 
         SDMXHDDataExportService sDMXHDDataExportService = Context.getService(SDMXHDDataExportService.class);
         List<ReportDataElement> list = sDMXHDDataExportService.listReportDataElement(reportId, null, null, 0, 0);
-        String DATASET_CODE = "";
+        String dataSetCode = "";
+        String reportName = "";
         List<String> periods = new ArrayList<String>();
         Map<String, List<ReportDataElementResult>> periodResults = new HashMap<String, List<ReportDataElementResult>>();
+        
         if (CollectionUtils.isNotEmpty(list)) {
-            DATASET_CODE = list.get(0).getReport().getCode();
+            dataSetCode = list.get(0).getReport().getCode();
+            reportName = list.get(0).getReport().getName();
             Date begin = SDMXHDataExportUtils.getFirstDate(sdf.parse(startDate));
             Date end = SDMXHDataExportUtils.getLastDate(begin);
             SimpleDateFormat periodFormatter = new SimpleDateFormat("yyyyMM");
@@ -145,7 +148,8 @@ public class ReportDataElementController {
             }
             String orgunitCode = Context.getAdministrationService().getGlobalProperty("sdmxhddataexport.organisationUnit");
             SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-            model.addAttribute("DATASET_CODE", DATASET_CODE);
+            model.addAttribute("DATASET_CODE", dataSetCode);
+            model.addAttribute("reportName", reportName);
             model.addAttribute("periods", periods);
             model.addAttribute("periodResults", periodResults);
             model.addAttribute("orgunit", orgunitCode);
