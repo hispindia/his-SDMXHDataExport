@@ -18,7 +18,7 @@
  *
 --%> 
 	
-	<c:set var="moduleId" value="standard"/>
+	<c:set var="moduleId" value="sdmxhddataexport"/>
 	<c:set var="baseLink" value="${pagingUtil.baseLink}" />
 	<c:set var="pageSize" value="${pagingUtil.pageSize}" />
 	<c:set var="currentPage" value="${pagingUtil.currentPage}" />
