@@ -184,9 +184,15 @@ public class ReportDataElementController {
             InputStream rd = conn.getInputStream();
             byte[] bytes = new byte[1024];
             int bytesRead;
+            boolean firstRead = true;
             while ((bytesRead = rd.read(bytes)) != -1) {
                 String str = new String(bytes);
-                str = str.substring(0, bytesRead).trim();
+                str = str.substring(0, bytesRead);
+                if(firstRead){
+                	firstRead = false;
+                	str = str.replaceAll("^\\s+", "");
+                }
+                
                 response.getOutputStream().write(str.getBytes(), 0, str.getBytes().length);
             }
             rd.close();
