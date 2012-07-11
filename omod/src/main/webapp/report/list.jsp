@@ -27,7 +27,7 @@
 
 <%@ include file="../includes/nav.jsp" %>
 
-<h2><spring:message code="sdmxhddataexport.report.manage"/></h2>	
+<h2><spring:message code="sdmxhddataexport.report.manage"/></h2>	<!-- Prints heading manage report -->
 
 <br />
 <c:forEach items="${errors.allErrors}" var="error">
@@ -58,7 +58,10 @@
 	<th><spring:message code="sdmxhddataexport.report.code"/></th>
 	<th><spring:message code="sdmxhddataexport.report.createdOn"/></th>
 	<th><spring:message code="sdmxhddataexport.report.createdBy"/></th>
-	<th></th>
+	<th>Data Elements</th>
+	<th>Download</th>
+	<th>View</th>
+	<th>Send</th>
 </tr>
 <c:forEach items="${reports}" var="report" varStatus="varStatus">
 	<tr class='${varStatus.index % 2 == 0 ? "oddRow" : "evenRow" } '>
@@ -72,13 +75,16 @@
 			<c:choose>
 				<c:when test="${not empty report.reportDataElements }">
 					<a href="#" onclick="ACT.go('reportDataElement.form?reportId=${ report.id}');" title="Map dataelement to this report">Change data element</a>
-					&nbsp;&nbsp;<a href="#" onclick="SDMXHDDataExport.showDialog('${ report.id}');" >Run</a>
+					&nbsp;&nbsp;<td><a href="#" onclick="SDMXHDDataExport.setOutputType('download');SDMXHDDataExport.showDialog('${ report.id}');" >Run</a></td>
 				</c:when>
 				<c:otherwise>
-					<a href="#" onclick="ACT.go('reportDataElement.form?reportId=${ report.id}');" title="Map dataelement to this report">Add data element</a>
+					<a href="#" onclick="ACT.go('reportDataElement.form?reportId=${ report.id}');" title="Map dataelement to this report">Add Data Element</a>
+					<td>Download</td>
 				</c:otherwise>
 			</c:choose>
 		</td>
+		<td><a href="#" onclick="SDMXHDDataExport.setOutputType('view');SDMXHDDataExport.showDialog('${ report.id}');" >View</a></td>
+		<td><a href="#" onclick="SDMXHDDataExport.setOutputType('send');SDMXHDDataExport.showDialog('${ report.id}');" >Send</a></td>
 	</tr>
 </c:forEach>
 
@@ -88,6 +94,7 @@
 </table>
 <div id="excecuteQuery">
 <input type="hidden" id="reportId" name="reportId" />
+<input type="hidden" id="outputType" name="outputType">
 <table >
 	<tr>
 		<td><spring:message code="sdmxhddataexport.startDate"/><em>*</em></td>

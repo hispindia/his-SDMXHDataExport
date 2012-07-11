@@ -50,6 +50,24 @@ public class DataElementValidator implements  Validator {
     	}
     	SDMXHDDataExportService inventoryService = Context.getService(SDMXHDDataExportService.class);
     	DataElement dataElementE = inventoryService.getDataElementByName(dataElement.getName());
+
+    	if(dataElement.getSqlQuery() =="")
+    	{
+    		error.reject("sdmxhddataexport.dataElement.sql.required");
+    	}
+    	
+    	else
+    		
+    		{String sql = dataElement.getSqlQuery();
+	
+		Integer result = inventoryService.executeQuery(sql, "01/07/2012", "01/07/2012");
+if(result==-1)
+{
+	error.reject("sdmxhddataexport.dataElement.sql.wrong");
+
+}
+    		}
+    	
     	if(dataElement.getId() != null){
     		if(dataElementE != null && dataElementE.getId().intValue() != dataElement.getId().intValue()){
     			error.reject("sdmxhddataexport.dataElement.name.existed");
@@ -59,7 +77,109 @@ public class DataElementValidator implements  Validator {
     	    		error.reject("sdmxhddataexport.dataElement.name.existed");
     		}
     	}
+
+    	
+    	boolean check = inventoryService.getDataElementByCode(dataElement.getCode());
+
+    	if(check ==false )
+    		
+    	{
+    		error.reject("sdmxhddataexport.dataElement.code.existed");
+
+    	}
+    	
+    	
+
     	
     	
     }
+    
+    
+    
+    
+    
+    public boolean fileValidate(Object command) {
+
+    	DataElement dataElement = (DataElement) command;
+
+    	boolean check=true;
+
+    	if( StringUtils.isBlank(dataElement.getName())){
+
+    		//error.reject("sdmxhddataexport.dataElement.name.required");
+
+    		check=false;
+
+    	}
+
+    	if( StringUtils.isBlank(dataElement.getCode())){
+
+    		//error.reject("sdmxhddataexport.dataElement.code.required");
+
+    		check=false;
+
+    	}
+
+    	SDMXHDDataExportService inventoryService = Context.getService(SDMXHDDataExportService.class);
+
+    	DataElement dataElementE = inventoryService.getDataElementByName(dataElement.getName());
+
+    	if(dataElement.getId() != null){
+
+    		if(dataElementE != null && dataElementE.getId().intValue() != dataElement.getId().intValue()){
+
+    			//error.reject("sdmxhddataexport.dataElement.name.existed");
+
+    			check=false;
+
+    		}
+
+    	}else{
+
+    		if(dataElementE != null){
+
+    	    	//	error.reject("sdmxhddataexport.dataElement.name.existed");
+
+    			check=false;
+
+    		}
+
+    	}
+
+    	if(dataElement.getSqlQuery() !="")
+    	{
+    	String sql = dataElement.getSqlQuery();
+	
+		Integer result = inventoryService.executeQuery(sql, "01/07/2012", "01/07/2012");
+if(result==-1)
+{
+	check =false;
+
+}
+    		}
+
+    	boolean check1=inventoryService.getDataElementByCode(dataElement.getCode());
+
+    	if(check1==false)
+
+    	{
+
+    		//error.reject("sdmxhddataexport.dataElement.code.existed");
+
+    		check=false;
+
+    	}
+
+    	
+
+    	return check;
+
+    }
+    
+    
+    
+    
+    
+    
+    
 }

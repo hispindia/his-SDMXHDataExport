@@ -22,7 +22,12 @@
 <openmrs:require privilege="Manage SDMXHDDataExport" otherwise="/login.htm" redirect="/module/sdmxhddataexport/report.form" />
 
 <%@ include file="/WEB-INF/template/header.jsp" %>
-<%@ include file="../includes/js_css.jsp" %>
+
+<%@ include file="../includes/nav.jsp" %>
+
+
+
+
 <h2><spring:message code="sdmxhddataexport.report.manage"/></h2>
 
 <c:forEach items="${errors.allErrors}" var="error">

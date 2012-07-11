@@ -54,6 +54,7 @@ public class DataElement implements Serializable {
 	private Date createdOn;
 	private String createdBy;
 	private String code;
+	private String sqlQuery;
 
 	@Override
 	public String toString() {
@@ -93,6 +94,14 @@ public class DataElement implements Serializable {
 		this.createdBy = createdBy;
 	}
 
+	public void setSqlQuery(String sqlQuery) {
+		this.sqlQuery = sqlQuery;
+	}
+	
+	public String getSqlQuery() {
+		return sqlQuery;
+	}
+	
 	public String getCode() {
 		return code;
 	}

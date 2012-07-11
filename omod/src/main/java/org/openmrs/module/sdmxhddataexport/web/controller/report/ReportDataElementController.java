@@ -19,9 +19,8 @@
  **/
 package org.openmrs.module.sdmxhddataexport.web.controller.report;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.PrintWriter;
+
+import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.ParseException;
@@ -35,6 +34,14 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import javax.xml.transform.Result;
+import javax.xml.transform.Source;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.sax.SAXResult;
+import javax.xml.transform.sax.SAXSource;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.stream.StreamSource;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
@@ -48,10 +55,13 @@ import org.openmrs.module.sdmxhddataexport.model.Query;
 import org.openmrs.module.sdmxhddataexport.model.Report;
 import org.openmrs.module.sdmxhddataexport.model.ReportDataElement;
 import org.openmrs.module.sdmxhddataexport.model.ReportDataElementResult;
+import org.openmrs.module.sdmxhddataexport.util.HttpRestUtil;
+import org.openmrs.module.sdmxhddataexport.util.MyHandler;
 import org.openmrs.module.sdmxhddataexport.web.controller.editor.DataElementEditor;
 import org.openmrs.module.sdmxhddataexport.web.controller.editor.QueryEditor;
 import org.openmrs.module.sdmxhddataexport.web.controller.editor.ReportEditor;
 import org.openmrs.module.sdmxhddataexport.web.controller.utils.SDMXHDataExportUtils;
+import org.openmrs.util.OpenmrsClassLoader;
 import org.openmrs.web.WebConstants;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -63,6 +73,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.support.SessionStatus;
+import org.xml.sax.ContentHandler;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
+import org.xml.sax.XMLReader;
+import org.xml.sax.helpers.XMLReaderFactory;
 
 @Controller("SDMXHDDataExportReportDataElementController")
 public class ReportDataElementController {
@@ -87,6 +102,38 @@ public class ReportDataElementController {
         return "/module/sdmxhddataexport/report/reportDataElement";
     }
 
+    public String transform(String str) throws Exception
+    {											   
+       try {
+          //String XMLFileName = "src\\cdcatalog.xml";
+          //String OutputFileName = "src\\myResult.html";
+        //  String StyleFileName = "/media/xml-to-string.xsl";
+    	  InputStream inpXsl = OpenmrsClassLoader.getInstance().getResourceAsStream("xml-to-string.xsl");
+          
+          
+          XMLReader reader = XMLReaderFactory.createXMLReader();
+          InputStream inp=new ByteArrayInputStream(str.getBytes());
+          Source source = new SAXSource(reader, new InputSource(inp));
+          //Source source2 = new SAXSource(reader, new InputSource(StyleFileName));
+          //ContentHandler theHandler = new MyHandler();
+          StringWriter outWriter = new StringWriter();  
+          StreamResult result = new StreamResult( outWriter ); 
+          //Result result = new StreamResult(OutputFileName);
+//          InputStream stinp=new ByteArrayInputStream(styleText.getBytes());         
+          Source style = new StreamSource(inpXsl);
+
+          TransformerFactory transFactory = TransformerFactory.newInstance();
+          Transformer trans = transFactory.newTransformer(style);
+
+          trans.transform(source, result);
+          String s = outWriter.getBuffer().toString();
+          System.out.println(s);
+          return s;
+       } catch (SAXException e) {
+           System.out.println(e.getMessage());
+           return e.getMessage();
+       }
+    }
     @RequestMapping(value = "/module/sdmxhddataexport/reportDataElement.form", method = RequestMethod.POST)
     public String post(
             @ModelAttribute("reportDataElement") ReportDataElement reportDataElement,
@@ -94,8 +141,10 @@ public class ReportDataElementController {
         new ReportDataElementValidator().validate(reportDataElement,
                 bindingResult);
         if (bindingResult.hasErrors()) {
+        	System.out.println("binding errors");
             return "/module/sdmxhddataexport/report/reportDataElement";
         } else {
+        	System.out.println("Supposedly No errors");
             SDMXHDDataExportService sDMXHDDataExportService = Context.getService(SDMXHDDataExportService.class);
             reportDataElement.setCreatedOn(new java.util.Date());
             sDMXHDDataExportService.saveReportDataElement(reportDataElement);
@@ -137,7 +186,7 @@ public class ReportDataElementController {
                     result.setReport(reportDataElement.getReport());
                     result.setQuery(reportDataElement.getQuery());
                     result.setResult(sDMXHDDataExportService.executeQuery(
-                            reportDataElement.getQuery().getSqlQuery(),
+                            reportDataElement.getDataElement().getSqlQuery(),
                             sdf.format(begin), sdf.format(end)));
                     results.add(result);
                 }
@@ -159,24 +208,28 @@ public class ReportDataElementController {
     }
 
     @RequestMapping(value = "/module/sdmxhddataexport/downloadExecutedReport.form", method = RequestMethod.GET)
-    public void downloadExecutedReport(
+    public String downloadExecutedReport(
             @RequestParam(value = "reportId", required = false) Integer reportId,
             @RequestParam(value = "startDate", required = false) String startDate,
             @RequestParam(value = "endDate", required = false) String endDate,
-            HttpServletRequest request, HttpServletResponse response)
+            @RequestParam(value = "outputType", required = false) String outputType,
+            HttpServletRequest request, HttpServletResponse response,
+            Model model)
             throws ParseException, IOException {
-
+    	
         String urlToRead = "http://" + request.getLocalAddr() + ":"
                 + request.getLocalPort() + request.getContextPath()
                 + "/module/sdmxhddataexport/resultExecuteReport.form?reportId="
                 + reportId + "&startDate=" + startDate + "&endDate=" + endDate;
         URL url;
         HttpURLConnection conn;
-        response.setContentType("application/download");
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd-hh-mm-ss");
-        response.setHeader("Content-Disposition", "attachment; filename=\""
-                + "sdmxhd-" + formatter.format(new Date()) + ".xml" + "\"");
-
+        if(outputType.contentEquals("download")){
+        	response.setContentType("application/download");
+        	SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd-hh-mm-ss");
+        	response.setHeader("Content-Disposition", "attachment; filename=\""
+        			+ "sdmxhd-" + formatter.format(new Date()) + ".xml" + "\"");
+        }
+        String contents="";
         try {
             url = new URL(urlToRead);
             conn = (HttpURLConnection) url.openConnection();
@@ -185,20 +238,49 @@ public class ReportDataElementController {
             byte[] bytes = new byte[1024];
             int bytesRead;
             boolean firstRead = true;
+            
             while ((bytesRead = rd.read(bytes)) != -1) {
                 String str = new String(bytes);
                 str = str.substring(0, bytesRead);
                 if(firstRead){
                 	firstRead = false;
                 	str = str.replaceAll("^\\s+", "");
+                	System.out.print(str);
+                	contents=contents.concat(str);
+                	
                 }
-                
-                response.getOutputStream().write(str.getBytes(), 0, str.getBytes().length);
+                if(outputType.equals("download")){
+                	response.getOutputStream().write(str.getBytes(), 0, str.getBytes().length);
+                }
             }
             rd.close();
         } catch (Exception e) {
             e.printStackTrace();
         }
+        if(outputType.equals("view")){
+        	try {
+				contents=transform(contents);
+			} catch (Exception e) {
+				System.out.println("some error"+ contents);
+				e.printStackTrace();
+			}
+        	model.addAttribute("contents",contents);
+        	System.out.println("Now contents---------------------------" + contents +":");
+        	return "/module/sdmxhddataexport/report/resultView";
+        }
+        else if(outputType.equals("send")){
+        	String urlStr = Context.getAdministrationService().getGlobalProperty("sdmxhddataexport.reportUrl");
+        	String[] paramName = {"report1"};
+        	String[] paramVal = new String[10];
+        	paramVal[0] = contents;
+        	try {
+				String Response = HttpRestUtil.httpRestPost(urlStr, paramName, paramVal);
+				System.out.println("Response:" + Response);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+        }
+    	return "/module/sdmxhddataexport/report/list";
     }
 
     @RequestMapping(value = "/module/sdmxhddataexport/extractMonth.form", method = RequestMethod.GET)

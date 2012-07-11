@@ -12,6 +12,7 @@
 		</id>
 		<property name="name"  />
 		<property name="code" column="code"/>
+		<property name="sqlQuery" column="sql_query"/>
 		<property name="createdOn" column="created_on" />
 		<property name="createdBy" column="created_by" />
 	</class>

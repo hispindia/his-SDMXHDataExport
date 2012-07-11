@@ -18,6 +18,9 @@
  *
 */
 SDMXHDDataExport = {
+		setAddress : function(add){
+			window.location.href = openmrsContextPath + "/module/sdmxhddataexport/"+add;
+		},
 		checkValue : function()
 		{
 			var form = jQuery("#form");
@@ -35,15 +38,61 @@ SDMXHDDataExport = {
 			}
 		},
 		
+		
+		
+		checkUpload : function()
+		{
+			var form1 = jQuery("#uploadDataElements");
+			
+			if( jQuery("input[type='file']",form1).val()!=""  )
+			{ 
+				if(confirm("Are you sure?"))
+				{
+					form1.submit();
+				}
+			}
+			else
+			{
+				alert("Please choose objects for Uploading");
+				
+				return false;
+			}
+		},
+		
+		
+		select : function()
+		{
+			jQuery("#form :checkbox:not(:checked)").attr("checked", true);
+			
+				
+			
+			
+		},
+		
+		unselect : function()
+		{
+			jQuery("#form :checked").attr("checked", false);
+				
+			
+			
+		},
+		
+		
 		search : function(url, value){
 			ACT.go(url+"?"+value+"="+jQuery("#"+value).val());
 		},
 		onChangeReportDataElement : function(thiz){
 			ACT.go("reportDataElement.form?reportId="+jQuery(thiz).val());
 		},
+		setOutputType : function(type){
+			jQuery("#outputType").val(type);
+		},
 		showDialog : function(reportId){
 			jQuery("#reportId").val(reportId);
 			jQuery('#excecuteQuery').dialog('open');
+		},
+		upload : function(){
+			jQuery('#uploadBox').dialog('open');
 		},
 		showQuery : function(queryId){
 			jQuery("#queryId").val(queryId);

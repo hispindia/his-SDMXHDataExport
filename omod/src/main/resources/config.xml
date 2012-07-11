@@ -56,6 +56,15 @@
 		</description>
 	</globalProperty>
 	
+	
+	<globalProperty>
+		<property>@MODULE_ID@.reportUrl</property>
+		<defaultValue>http://httpbin.org/post</defaultValue>
+		<description>
+			URL where the report has to be sent. (normlly DHIS url) 
+		</description>
+	</globalProperty>
+	
 	<!-- Required Global Properties 
 	
 	<globalProperty>

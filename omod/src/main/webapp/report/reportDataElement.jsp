@@ -84,28 +84,10 @@
 		</spring:bind>
 		</td>
 	</tr>
-	<tr>
-		<td><spring:message code="sdmxhddataexport.query.title"/><em>*</em></td>
-		<td>
-		<spring:bind path="reportDataElement.query">
-			<select  name="${status.expression }" id="queryId"   style="width:150px">
-			<option value=""></option>
-				<c:forEach items="${queries}" var="query">
-					<option value="${query.id}"
-					<c:if test="${query.id == reportDataElement.query.id}"> selected</c:if>
-					>${query.name}
-					</option>
-				</c:forEach>
-			</select>
-			<c:if test="${status.errorMessage != ''}"><span class="error">${status.errorMessage}</span></c:if>
-		</spring:bind>
-		</td>
-	</tr>
 </table>
 
 <input type="submit" class="ui-button ui-widget ui-state-default ui-corner-all" value="<spring:message code="general.save"/>">
 <c:if test="${ not empty reportDataElements}">
-<input type="button" class="ui-button ui-widget ui-state-default ui-corner-all" id="excecuteQueryButton" value="<spring:message code="sdmxhddataexport.report.run"/>">
 <div id="excecuteQuery">
 <table >
 	<tr>
@@ -142,7 +124,6 @@
 	<th>No</th>
 	<th><spring:message code="sdmxhddataexport.report.title"/></th>
 	<th><spring:message code="sdmxhddataexport.dataElement.title"/></th>
-	<th><spring:message code="sdmxhddataexport.query.title"/></th>
 </tr>
 <c:forEach items="${reportDataElements}" var="reportDataElement" varStatus="varStatus">
 	<tr class='${varStatus.index % 2 == 0 ? "oddRow" : "evenRow" } '>
@@ -150,7 +131,6 @@
 		<td><c:out value="${(( pagingUtil.currentPage - 1  ) * pagingUtil.pageSize ) + varStatus.count }"/></td>	
 		<td><a href="#" onclick="ACT.go('reportDataElement.form?reportDataElementId=${ reportDataElement.id}');" title="Edit">${reportDataElement.report.name}</a> </td>
 		<td>${reportDataElement.dataElement.name }</td>
-		<td>${reportDataElement.query.name}</td>
 	</tr>
 </c:forEach>
 

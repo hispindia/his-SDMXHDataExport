@@ -18,7 +18,6 @@
  *
  **/
 package org.openmrs.module.sdmxhddataexport.web.controller.report;
-
 import org.openmrs.api.context.Context;
 import org.openmrs.module.sdmxhddataexport.SDMXHDDataExportService;
 import org.openmrs.module.sdmxhddataexport.model.ReportDataElement;
@@ -34,6 +33,7 @@ import org.springframework.validation.Validator;
  * <p> Create date: Sep 22, 2011 2:03:38 PM </p>
  * <p> Update date: Sep 22, 2011 2:03:38 PM </p>
  **/
+
 public class ReportDataElementValidator implements Validator {
 
     /**
@@ -55,9 +55,9 @@ public class ReportDataElementValidator implements Validator {
         if (reportDataElement.getDataElement() == null) {
             error.reject("sdmxhddataexport.reportDataElement.dataElement.required");
         }
-        if (reportDataElement.getQuery() == null) {
-            error.reject("sdmxhddataexport.reportDataElement.query.required");
-        }
+        //if (reportDataElement.getQuery() == null) {
+        //    error.reject("sdmxhddataexport.reportDataElement.query.required");
+        //}
         SDMXHDDataExportService sDMXHDDataExportService = Context.getService(SDMXHDDataExportService.class);
         ReportDataElement reportE = sDMXHDDataExportService.getReportDataElement(reportDataElement.getReport().getId(), reportDataElement.getDataElement().getId());
         if (reportDataElement.getId() != null) {

@@ -46,6 +46,54 @@ var EVT =
 var CHECK = 
 {
 	
+	listDataElementPage : function(){
+		jQuery('.date-pick').datepicker({yearRange:'c-30:c+30', dateFormat: 'dd/mm/yy', changeMonth: true, changeYear: true});
+		jQuery('#excecuteQuery').dialog({
+			autoOpen: false,
+			modal: true,
+			title: 'Execute query',
+			width: '40%',
+			buttons: {
+				"Run": function() {
+					 var sd = jQuery("#startDate").val();
+                     var ed = jQuery("#endDate").val();
+                     if((sd==null || sd=="")  && (ed==null || ed==""))
+                             {
+                                     alert(" Provide start date and end date ");
+                             }       
+                     else if (sd==null || sd=="")
+                    {
+                       alert(" Provide start date");
+                    }
+            else if(ed==null || ed=="")
+            {
+               alert(" Provide end date");
+            }
+					
+					
+				else
+					{
+					//change here
+					
+										
+					var data = jQuery.ajax(
+							{
+								type:"POST"  //this is sending post request to executeQuery.form
+								,url: "executeQuery.form"
+								,data: ({startDate :jQuery("#startDate").val(),endDate : jQuery("#endDate").val(), queryId : jQuery("#queryId").val(),})	
+								,async: false
+								, cache : false
+							}).responseText;
+					jQuery("#resultExecute").html(data);
+					}
+				},
+				Close: function() {
+					jQuery("#resultExecute").html("");
+					jQuery( this ).dialog( "close" );
+				}
+			}
+		});
+	},
 	
 	dataElementPage : function()
 	{
@@ -59,6 +107,8 @@ var CHECK =
 				
 			}
 		});
+		
+		
 	},
 	reportPage : function()
 	{
@@ -167,6 +217,9 @@ var CHECK =
 	listReportPage : function()
 	{
 		jQuery('.date-pick').datepicker({yearRange:'c-30:c+30', dateFormat: 'dd/mm/yy', changeMonth: true, changeYear: true});
+		
+		
+		
 		jQuery('#excecuteQuery').dialog({
 			autoOpen: false,
 			modal: true,
@@ -174,7 +227,28 @@ var CHECK =
 			width: '40%',
 			buttons: {
 				"Run": function() {
-					window.location.href = openmrsContextPath + "/module/sdmxhddataexport/downloadExecutedReport.form?reportId=" + jQuery("#reportId").val() + "&startDate=" + jQuery("#startDate").val() + "&endDate=" + jQuery("#endDate").val();
+					
+					
+					 var sd = jQuery("#startDate").val();
+                     var ed = jQuery("#endDate").val();
+                     if((sd==null || sd=="")  && (ed==null || ed==""))
+                             {
+                                     alert(" Provide start date and end date ");
+                             }       
+                     else if (sd==null || sd=="")
+                    {
+                       alert(" Provide start date");
+                    }
+            else if(ed==null || ed=="")
+            {
+               alert(" Provide end date");
+            }
+					
+					
+				else
+					{
+					window.location.href = openmrsContextPath + "/module/sdmxhddataexport/downloadExecutedReport.form?reportId=" + jQuery("#reportId").val() + "&startDate=" + jQuery("#startDate").val() + "&endDate=" + jQuery("#endDate").val()+"&outputType="+jQuery("#outputType").val();
+					}
 					// var data = jQuery.ajax(
 							// {
 								// type:"GET"

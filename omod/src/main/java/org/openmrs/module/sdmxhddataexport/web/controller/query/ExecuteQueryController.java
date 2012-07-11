@@ -78,16 +78,24 @@ public class ExecuteQueryController {
 		 	String queryId = request.getParameter("queryId");
 		 	String sqlQuery = request.getParameter("sqlQuery");
 		 	String startDate = request.getParameter("startDate");
-		 	String endDate = request.getParameter("endDate");
 		 	
+		 	
+		 	String endDate = request.getParameter("endDate");
+		 
+		 	
+		 
+		 		
 			SDMXHDDataExportService sDMXHDDataExportService =Context.getService(SDMXHDDataExportService.class);
 			String sql = "";
+			//System.out.println(  ;-)
 			if(StringUtils.isBlank(sqlQuery)){
-				sql = sDMXHDDataExportService.getQueryById(NumberUtils.toInt(queryId)).getSqlQuery();
+				sql = sDMXHDDataExportService.getDataElementById(NumberUtils.toInt(queryId)).getSqlQuery();
 			}else{
 				sql = sqlQuery;
 			}
+			//Integer result=777;-) BOND 
 			Integer result = sDMXHDDataExportService.executeQuery(sql, startDate, endDate);
+			System.out.println("------------------"+startDate);
 			return "Result: "+result;
 		}
 }

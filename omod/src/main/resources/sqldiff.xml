@@ -50,7 +50,35 @@
 		<sql>
 			ALTER TABLE sdmxhddataexport_data_element ADD code varchar(255) DEFAULT NULL;
 		</sql>
+	</diff>
+	
+	<diff>
+		<version>0.4</version>
+		<author>Sanchit Sharma</author>
+		<date>April 9th 2012</date>
+		<description>
+			Added column sql_query into table sdmxhddataexport_data_element
+		</description>
+		<sql>
+			ALTER TABLE sdmxhddataexport_data_element ADD sql_query text DEFAULT NULL;
+		</sql>
 	</diff>	
 
+	<!--  
+	
+	<diff>
+		<version>0.5</version>
+		<author>Sanchit Sharma</author>
+		<date>june 3th 2012</date>
+		<description>
+			
+		</description>
+		<sql>
+		    ALTER TABLE sdmxhddataexport_data_element DROP PRIMARY KEY ;
+			ALTER TABLE sdmxhddataexport_data_element ADD PRIMARY KEY (code,name,id);
+		</sql>
+	</diff>	
+	
+	-->
 	
 </sqldiff>

@@ -20,6 +20,7 @@
 
 package org.openmrs.module.sdmxhddataexport;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.openmrs.api.APIException;
@@ -45,11 +46,14 @@ public interface SDMXHDDataExportService extends OpenmrsService {
 	@Transactional(readOnly=false)
 	public DataElement saveDataElement(DataElement dataElement) throws APIException;
 
+	public DataElement saveDataElements(ArrayList<DataElement> dataElements) throws APIException;
 	
 	public DataElement getDataElementById(Integer id) throws APIException;
 	
 	public DataElement getDataElementByName(String name) throws APIException;
 	
+	public boolean getDataElementByCode(String code) throws APIException;
+
 	@Transactional(readOnly=false)
 	public void deleteDataElement(DataElement dataElement) throws APIException;
 	

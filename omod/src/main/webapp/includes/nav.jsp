@@ -19,10 +19,38 @@
 --%> 
 <%@ include file="js_css.jsp" %>
 <br/>
-<b><a href="#" onclick="ACT.go('listDataElement.form');"><spring:message code="sdmxhddataexport.dataElement.manage"/></a></b>&nbsp; | 
-<b><a href="#" onclick="ACT.go('listQuery.form');"><spring:message code="sdmxhddataexport.query.manage"/></a></b>&nbsp; | 
-<b><a href="#" onclick="ACT.go('listReport.form');"><spring:message code="sdmxhddataexport.report.manage"/></a></b> 
+<c:if test='<%= request.getRequestURI().contains("dataElement/list") %>'>
+<b><spring:message code="sdmxhddataexport.dataElement.manage"/></b>&nbsp; |
+ <%--<b><a href="#" onclick="ACT.go('listQuery.form');"><spring:message code="sdmxhddataexport.query.manage"/></a></b>&nbsp; |--%>
+<b><a href="#" onclick="ACT.go('listReport.form');"><spring:message code="sdmxhddataexport.report.manage"/></a></b>
+</c:if>
 
+ 
+<c:if test='<%= request.getRequestURI().contains("query/list") %>'> 
+<b><a href="#" onclick="ACT.go('listDataElement.form');"><spring:message code="sdmxhddataexport.dataElement.manage"/></a></b>&nbsp; |
+<b><spring:message code="sdmxhddataexport.query.manage"/></b>&nbsp; |
+<b><a href="#" onclick="ACT.go('listReport.form');"><spring:message code="sdmxhddataexport.report.manage"/></a></b>
+</c:if>
+
+<c:if test='<%= request.getRequestURI().contains("report/list") %>'>
+<b><a href="#" onclick="ACT.go('listDataElement.form');"><spring:message code="sdmxhddataexport.dataElement.manage"/></a></b>&nbsp; |
+<b><spring:message code="sdmxhddataexport.report.manage"/></b> 
+</c:if>
+
+<c:if test='<%= request.getRequestURI().contains("report/form") %>'> 
+<b><a href="#" onclick="ACT.go('listDataElement.form');"><spring:message code="sdmxhddataexport.dataElement.manage"/></a></b>&nbsp; |
+<b><a href="#" onclick="ACT.go('listReport.form');"><spring:message code="sdmxhddataexport.report.manage"/></a></b>
+</c:if>
+
+<c:if test='<%= request.getRequestURI().contains("dataElement/form") %>'> 
+<b><a href="#" onclick="ACT.go('listDataElement.form');"><spring:message code="sdmxhddataexport.dataElement.manage"/></a></b>&nbsp; |
+<b><a href="#" onclick="ACT.go('listReport.form');"><spring:message code="sdmxhddataexport.report.manage"/></a></b>
+</c:if>
+<c:if test='<%= request.getRequestURI().contains("report/resultView") %>'> 
+<b><a href="#" onclick="ACT.go('listDataElement.form');"><spring:message code="sdmxhddataexport.dataElement.manage"/></a></b>&nbsp; |
+<b><a href="#" onclick="ACT.go('listReport.form');"><spring:message code="sdmxhddataexport.report.manage"/></a></b>
+</c:if>
+<!-- added last two sttements for adding a navigation bar on the jsp's 1)report.form 2)dataElement.form 3)data-->
 <br/><br/>
 
 

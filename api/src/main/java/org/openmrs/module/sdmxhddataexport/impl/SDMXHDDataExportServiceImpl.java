@@ -20,6 +20,7 @@
 
 package org.openmrs.module.sdmxhddataexport.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.openmrs.api.APIException;
@@ -63,6 +64,12 @@ public class SDMXHDDataExportServiceImpl  extends BaseOpenmrsService implements 
 		// TODO Auto-generated method stub
 		return dao.saveDataElement(dataElement);
 	}
+	
+	@Override
+	public DataElement saveDataElements(ArrayList<DataElement> dataElements)
+			throws APIException {
+		 return dao.saveDataElements(dataElements);
+	}
 
 	@Override
 	public DataElement getDataElementById(Integer id) throws APIException {
@@ -70,6 +77,11 @@ public class SDMXHDDataExportServiceImpl  extends BaseOpenmrsService implements 
 		return dao.getDataElementById(id);
 	}
 
+	public boolean getDataElementByCode(String code) throws APIException {
+		// TODO Auto-generated method stub
+		return dao.getDataElementByCode(code);
+	}
+	
 	@Override
 	public DataElement getDataElementByName(String name) throws APIException {
 		// TODO Auto-generated method stub
@@ -210,6 +222,8 @@ public class SDMXHDDataExportServiceImpl  extends BaseOpenmrsService implements 
 		// TODO Auto-generated method stub
 		return dao.getReportDataElement(reportId, dataElementId);
 	}
+
+	
 	
 	
 }

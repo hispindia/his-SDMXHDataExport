@@ -20,6 +20,7 @@
 
 package org.openmrs.module.sdmxhddataexport.db;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.openmrs.api.db.DAOException;
@@ -41,8 +42,12 @@ public interface SDMXHDDataExportDAO {
 	public int countListDataElement(String name)  throws DAOException;
 	
 	public DataElement saveDataElement(DataElement dataElement) throws DAOException;
+	
+	public DataElement saveDataElements(ArrayList<DataElement> dataElements) throws DAOException;
 
 	public DataElement getDataElementById(Integer id) throws DAOException;
+	
+	public boolean getDataElementByCode(String code) throws DAOException;
 	
 	public DataElement getDataElementByName(String name) throws DAOException;
 	

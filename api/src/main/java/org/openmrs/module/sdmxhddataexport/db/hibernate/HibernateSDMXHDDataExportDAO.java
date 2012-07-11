@@ -21,15 +21,19 @@
 package org.openmrs.module.sdmxhddataexport.db.hibernate;
 
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.ListIterator;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.Criteria;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
+import org.openmrs.api.context.Context;
 import org.openmrs.api.db.DAOException;
 import org.openmrs.module.sdmxhddataexport.db.SDMXHDDataExportDAO;
 import org.openmrs.module.sdmxhddataexport.model.DataElement;
@@ -63,7 +67,7 @@ public class HibernateSDMXHDDataExportDAO  implements SDMXHDDataExportDAO{
 		
 		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(DataElement.class,"dataElement");
 		if(StringUtils.isNotBlank(name)){
-			criteria.add(Restrictions.like("dataElement.name", "%"+name+"%"));
+			criteria.add(Restrictions.like("name", "%"+name+"%"));
 		}
 		if(max > 0){
 			criteria.setFirstResult(min).setMaxResults(max);
@@ -89,7 +93,22 @@ public class HibernateSDMXHDDataExportDAO  implements SDMXHDDataExportDAO{
 		
 		return (DataElement)sessionFactory.getCurrentSession().merge(dataElement);
 	}
-
+	
+	@Override
+	public DataElement saveDataElements(ArrayList<DataElement> dataElements)
+			throws DAOException {
+		ListIterator<DataElement> li = dataElements.listIterator();
+		DataElement de;
+		while(li.hasNext()){
+			de = (DataElement) li.next();
+			System.out.println("Element 1 = " + de.getName());
+			de.setCreatedOn(new java.util.Date());
+			de.setCreatedBy(Context.getAuthenticatedUser().getGivenName());
+			sessionFactory.getCurrentSession().merge(de);
+		}
+		return null;
+	}
+	
 	@Override
 	public DataElement getDataElementById(Integer id) throws DAOException {
 		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(DataElement.class);
@@ -97,6 +116,22 @@ public class HibernateSDMXHDDataExportDAO  implements SDMXHDDataExportDAO{
 		DataElement dataElement = (DataElement) criteria.uniqueResult();
 		return dataElement;
 	}
+	
+	
+	public boolean getDataElementByCode(String code) throws DAOException {
+		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(DataElement.class);
+		criteria.add(Restrictions.eq("code", code));
+		DataElement dataElement = (DataElement) criteria.uniqueResult();
+		
+		if(dataElement != null)
+		{
+		return false;
+		}
+		
+		else 
+			{return true;}
+	}
+
 
 	@Override
 	public DataElement getDataElementByName(String name) throws DAOException {
@@ -289,24 +324,37 @@ public class HibernateSDMXHDDataExportDAO  implements SDMXHDDataExportDAO{
 	public Integer executeQuery(String query,String startDate, String endDate) throws DAOException{
 		query = query.toLowerCase();
 		if(!query.startsWith("select")){
-			return 0;
+	////////////		return 0;
+		return -1;
 		}
+		
+		
+
 		BigInteger  result = new BigInteger("0");
 		String start = DateUtils.getDateFromRange(startDate) + " 00:00:00";
 		String end = DateUtils.getDateFromRange(endDate) + " 23:59:59";
 		
-		 
+		try{
 		 if(query.indexOf("?") != -1){
 			 query = query.replaceFirst("\\?", " '"+start+"' ");
 			 query = query.replaceFirst("\\?", " '"+end+"' ");
 		 }
+			
 		 org.hibernate.Query q = sessionFactory.getCurrentSession().createSQLQuery(query);
 		 Object l = q.uniqueResult();
 		 if(l != null){
 			 result = (BigInteger ) l;
 		 }
 		 
-		 return result != null ? result.intValue() : 0;
+		}
+			
+		
+			catch(Exception e)
+			{
+			
+			return -1;
+			}
+		 return result != null ? result.intValue() : -1;
 	}
 	
 	
@@ -323,5 +371,9 @@ public class HibernateSDMXHDDataExportDAO  implements SDMXHDDataExportDAO{
 	public static void main(String[] args) {
 		System.out.println("abca".replaceFirst("a", "x").replaceFirst("a", "y"));
 	}
+
+	
+
+
 	
 }

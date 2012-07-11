@@ -48,8 +48,7 @@
 	<tr>
 		<td><spring:message code="general.name"/><em>*</em></td>
 		<td>
-			<spring:bind path="dataElement.name">
-				
+			<spring:bind path="dataElement.name">	
 				<input type="text" name="${status.expression}" id="${status.expression}" value="${status.value}" size="60" />
 				<c:if test="${status.errorMessage != ''}"><span class="error">${status.errorMessage}</span></c:if>
 			</spring:bind>
@@ -60,6 +59,15 @@
 		<td>
 			<spring:bind path="dataElement.code">				
 				<input type="text" name="${status.expression}" id="${status.expression}" value="${status.value}" size="60" />
+				<c:if test="${status.errorMessage != ''}"><span class="error">${status.errorMessage}</span></c:if>
+			</spring:bind>
+		</td>
+	</tr>
+	<tr>
+		<td>Query</td>
+		<td>
+			<spring:bind path="dataElement.sqlQuery">				
+			<textarea rows="12" style="width:800px;"  name="${status.expression}" id="${status.expression}"  >${status.value}</textarea>
 				<c:if test="${status.errorMessage != ''}"><span class="error">${status.errorMessage}</span></c:if>
 			</spring:bind>
 		</td>
