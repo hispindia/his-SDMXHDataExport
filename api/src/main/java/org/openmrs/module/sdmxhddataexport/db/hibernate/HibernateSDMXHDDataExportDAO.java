@@ -323,6 +323,7 @@ public class HibernateSDMXHDDataExportDAO  implements SDMXHDDataExportDAO{
 	
 	public Integer executeQuery(String query,String startDate, String endDate) throws DAOException{
 		query = query.toLowerCase();
+		
 		if(!query.startsWith("select")){
 	////////////		return 0;
 		return -1;
@@ -338,6 +339,10 @@ public class HibernateSDMXHDDataExportDAO  implements SDMXHDDataExportDAO{
 		 if(query.indexOf("?") != -1){
 			 query = query.replaceFirst("\\?", " '"+start+"' ");
 			 query = query.replaceFirst("\\?", " '"+end+"' ");
+			 while (query.contains("?")){
+			 query = query.replaceFirst("\\?", " '"+start+"' ");
+			 query = query.replaceFirst("\\?", " '"+end+"' ");
+			 }
 		 }
 			
 		 org.hibernate.Query q = sessionFactory.getCurrentSession().createSQLQuery(query);
