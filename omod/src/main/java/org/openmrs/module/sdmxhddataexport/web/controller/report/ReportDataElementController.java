@@ -65,6 +65,7 @@ import org.openmrs.util.OpenmrsClassLoader;
 import org.openmrs.web.WebConstants;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.FileCopyUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
@@ -152,7 +153,7 @@ public class ReportDataElementController {
             return "redirect:/module/sdmxhddataexport/reportDataElement.form?reportId="
                     + reportDataElement.getReport().getId();
         }
-        // return "/module/sdmxhddataexport/report/reportDataElement";
+        
     }
 
     @RequestMapping(value = "/module/sdmxhddataexport/resultExecuteReport.form", method = RequestMethod.GET)
@@ -216,25 +217,28 @@ public class ReportDataElementController {
             HttpServletRequest request, HttpServletResponse response,
             Model model)
             throws ParseException, IOException {
-    	
-        String urlToRead = "http://" + request.getLocalAddr() + ":"
-                + request.getLocalPort() + request.getContextPath()
+    	String u=request.getParameter("url");
+    	System.out.print("i think it is a url - "+u);
+    	//String s=(u.split("/")[2]).split(":")[0];
+        String urlToRead = "http://" + u 
+                +  request.getContextPath()
                 + "/module/sdmxhddataexport/resultExecuteReport.form?reportId="
                 + reportId + "&startDate=" + startDate + "&endDate=" + endDate;
+//    	String urlToRead = "http://" + "127.0.0.1" + ":"
+//        + request.getLocalPort() + request.getContextPath()
+//        + "/module/sdmxhddataexport/resultExecuteReport.form?reportId="
+//        + reportId + "&startDate=" + startDate + "&endDate=" + endDate;
         URL url;
+        
+        System.out.println("http servlet request"+ u +request.getLocalAddr()+","+request.getLocalName());
         HttpURLConnection conn;
-        if(outputType.contentEquals("download")){
-        	response.setContentType("application/download");
-        	SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd-hh-mm-ss");
-        	response.setHeader("Content-Disposition", "attachment; filename=\""
-        			+ "sdmxhd-" + formatter.format(new Date()) + ".xml" + "\"");
-        }
+        InputStream rd = null;
         String contents="";
         try {
             url = new URL(urlToRead);
             conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("GET");
-            InputStream rd = conn.getInputStream();
+            rd = conn.getInputStream();
             byte[] bytes = new byte[1024];
             int bytesRead;
             boolean firstRead = true;
@@ -242,21 +246,45 @@ public class ReportDataElementController {
             while ((bytesRead = rd.read(bytes)) != -1) {
                 String str = new String(bytes);
                 str = str.substring(0, bytesRead);
-                if(firstRead){
-                	firstRead = false;
-                	str = str.replaceAll("^\\s+", "");
-                	System.out.print(str);
-                	contents=contents.concat(str);
-                	
-                }
-                if(outputType.equals("download")){
-                	response.getOutputStream().write(str.getBytes(), 0, str.getBytes().length);
-                }
+                //if(firstRead){
+                firstRead = false;
+                str = str.replaceAll("^\\s+", "");
+                System.out.print(str);
+                //}
+                contents=contents.concat(str);
+                
             }
-            rd.close();
+            //rd.close();
         } catch (Exception e) {
             e.printStackTrace();
         }
+        
+        
+        if(outputType.contentEquals("download")){
+//        	File fil1=new File("/sdmx-temp-sdmx.xml");
+//        	FileOutputStream fos = new FileOutputStream("sdmx-temp-sdmx.xml");
+        	File file = File.createTempFile("sdmx", "report");
+        	Writer output = new BufferedWriter(new FileWriter(file));
+        	output.write(contents);
+        	output.flush();
+//        	output = new BufferedWriter(new FileWriter(fil1));
+//        	output.write(contents);
+//        	output.flush();
+      
+        	output.close();
+        	System.out.println("these are contents ------------------------");
+        	System.out.println(contents);
+        	System.out.println("these wre contents ------------------------");
+        	response.setContentType("application/download");
+        	SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd-hh-mm-ss");
+        	response.setHeader("Content-Disposition", "attachment; filename=\""
+        			+ "sdmxhd-" + formatter.format(new Date()) + ".xml" + "\"");
+        	FileCopyUtils.copy(new FileInputStream(file), response.getOutputStream());
+            file.delete();
+
+        }
+        
+        
         if(outputType.equals("view")){
         	try {
 				contents=transform(contents);
@@ -269,6 +297,8 @@ public class ReportDataElementController {
         	return "/module/sdmxhddataexport/report/resultView";
         }
         else if(outputType.equals("send")){
+            HttpSession httpSession = request.getSession();
+
         	String urlStr = Context.getAdministrationService().getGlobalProperty("sdmxhddataexport.reportUrl");
         	String[] paramName = {"report1"};
         	String[] paramVal = new String[10];
@@ -276,6 +306,9 @@ public class ReportDataElementController {
         	try {
 				String Response = HttpRestUtil.httpRestPost(urlStr, paramName, paramVal);
 				System.out.println("Response:" + Response);
+				String temp = "Report Sent Successfully";
+				httpSession.setAttribute(WebConstants.OPENMRS_MSG_ATTR, StringUtils.isBlank(temp) ?  "sdmxhddataexport.dataElement.deleted" : temp);
+
 			} catch (Exception e) {
 				e.printStackTrace();
 			}

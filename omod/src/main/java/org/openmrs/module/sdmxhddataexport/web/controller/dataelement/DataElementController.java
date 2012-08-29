@@ -124,9 +124,13 @@ public class DataElementController {
 	    public void downloadDataElements(
 	            HttpServletRequest request, HttpServletResponse response)
 	            throws ParseException, IOException {
-
-	        String urlToRead = "http://" + request.getLocalAddr() + ":"
-	                + request.getLocalPort() + request.getContextPath()
+		 	
+		 	
+		 	String u=request.getParameter("url");
+	    	
+	    	
+	        String urlToRead = "http://" + u
+	                + request.getContextPath()
 	                + "/module/sdmxhddataexport/dataElementExport.form";
 	        URL url;
 	        HttpURLConnection conn;

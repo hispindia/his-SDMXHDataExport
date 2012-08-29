@@ -61,7 +61,7 @@ public class DataElementValidator implements  Validator {
     		{String sql = dataElement.getSqlQuery();
 	
 		Integer result = inventoryService.executeQuery(sql, "01/07/2012", "01/07/2012");
-if(result==-1)
+if(result == -1)
 {
 	error.reject("sdmxhddataexport.dataElement.sql.wrong");
 

@@ -69,6 +69,10 @@ SDMXHDDataExport = {
 			
 		},
 		
+		whatUrl : function(id){
+			//alert(window.location.href);
+			jQuery('#url').val(window.location.href);
+		},
 		unselect : function()
 		{
 			jQuery("#form :checked").attr("checked", false);
@@ -121,4 +125,5 @@ SDMXHDDataExport = {
 		
 		
 }
+
 

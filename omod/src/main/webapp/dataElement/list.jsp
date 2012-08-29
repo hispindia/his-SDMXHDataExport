@@ -26,7 +26,7 @@
 <%@ include file="/WEB-INF/template/header.jsp" %>
 
 <%@ include file="../includes/nav.jsp" %>
-
+<script type="text/javascript">window.onload = SDMXHDDataExport.whatUrl('url');</script>
 <h2><spring:message code="sdmxhddataexport.dataElement.manage"/></h2>	
 
 <script type="text/javascript">
@@ -40,6 +40,14 @@
 	function refresh(){
 		window.location.href = window.location.href;
 	}
+	
+	function whatUrl(){
+		var str=window.location.href;
+		var n=str.split("//");
+		var s=n[1].split('/')
+		var t=s[0];
+		return t;
+	}
 </script>
 <!-- tb_show( "testing", "uploadDataElements.form?script=refresh();&modal=true&height=600&width=800" );-->
 <br />
@@ -47,7 +55,7 @@
 	<span class="error"><spring:message code="${error.defaultMessage}" text="${error.defaultMessage}"/></span><
 </c:forEach>
 <input type="button" class="ui-button ui-widget ui-state-default ui-corner-all" value="<spring:message code='sdmxhddataexport.dataElement.add'/>" onclick="ACT.go('dataElement.form');"/>
-<input type="button" class="ui-button ui-widget ui-state-default ui-corner-all" value="<spring:message code='sdmxhddataexport.dataElement.export'/>" onclick="SDMXHDDataExport.setAddress('downloadDataElements.form');"/>
+<input type="button" class="ui-button ui-widget ui-state-default ui-corner-all" value="<spring:message code='sdmxhddataexport.dataElement.export'/>" onclick="SDMXHDDataExport.setAddress('downloadDataElements.form?url='+whatUrl());"/>
 <!-- ACT.go('dataElementExport.form');"/> -->
 <br /><br />
 

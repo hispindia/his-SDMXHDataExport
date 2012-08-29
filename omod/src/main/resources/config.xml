@@ -8,7 +8,7 @@
 	<name>@MODULE_NAME@</name>
 	<version>@MODULE_VERSION@</version>
 	<package>@MODULE_PACKAGE@</package>
-	<author>Chuyen Nguyen</author>
+	<author>Chuyen Nguyen, Sanchit , Apurv</author>
 	<description>
 			SDMXHDataExport
 	</description>

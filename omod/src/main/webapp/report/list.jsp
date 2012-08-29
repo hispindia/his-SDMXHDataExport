@@ -28,7 +28,7 @@
 <%@ include file="../includes/nav.jsp" %>
 
 <h2><spring:message code="sdmxhddataexport.report.manage"/></h2>	<!-- Prints heading manage report -->
-
+<script type="text/javascript">window.onload = SDMXHDDataExport.whatUrl('url');</script>
 <br />
 <c:forEach items="${errors.allErrors}" var="error">
 	<span class="error"><spring:message code="${error.defaultMessage}" text="${error.defaultMessage}"/></span><
@@ -37,6 +37,8 @@
 
 <br /><br />
 <input type="hidden" id="pageId" value="listReportPage" />
+
+
 <form method="post" onsubmit="return false" id="form">
 <table cellpadding="5" cellspacing="0"  >
 	<tr>
@@ -93,6 +95,7 @@
 </tr>
 </table>
 <div id="excecuteQuery">
+<input type="hidden" id="url"/>
 <input type="hidden" id="reportId" name="reportId" />
 <input type="hidden" id="outputType" name="outputType">
 <table >

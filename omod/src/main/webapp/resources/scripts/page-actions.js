@@ -55,37 +55,16 @@ var CHECK =
 			width: '40%',
 			buttons: {
 				"Run": function() {
-					 var sd = jQuery("#startDate").val();
-                     var ed = jQuery("#endDate").val();
-                     if((sd==null || sd=="")  && (ed==null || ed==""))
-                             {
-                                     alert(" Provide start date and end date ");
-                             }       
-                     else if (sd==null || sd=="")
-                    {
-                       alert(" Provide start date");
-                    }
-            else if(ed==null || ed=="")
-            {
-               alert(" Provide end date");
-            }
-					
-					
-				else
-					{
-					//change here
-					
-										
 					var data = jQuery.ajax(
 							{
-								type:"POST"  //this is sending post request to executeQuery.form
+								type:"POST"
 								,url: "executeQuery.form"
 								,data: ({startDate :jQuery("#startDate").val(),endDate : jQuery("#endDate").val(), queryId : jQuery("#queryId").val(),})	
 								,async: false
 								, cache : false
 							}).responseText;
 					jQuery("#resultExecute").html(data);
-					}
+					
 				},
 				Close: function() {
 					jQuery("#resultExecute").html("");
@@ -227,28 +206,11 @@ var CHECK =
 			width: '40%',
 			buttons: {
 				"Run": function() {
-					
-					
-					 var sd = jQuery("#startDate").val();
-                     var ed = jQuery("#endDate").val();
-                     if((sd==null || sd=="")  && (ed==null || ed==""))
-                             {
-                                     alert(" Provide start date and end date ");
-                             }       
-                     else if (sd==null || sd=="")
-                    {
-                       alert(" Provide start date");
-                    }
-            else if(ed==null || ed=="")
-            {
-               alert(" Provide end date");
-            }
-					
-					
-				else
-					{
-					window.location.href = openmrsContextPath + "/module/sdmxhddataexport/downloadExecutedReport.form?reportId=" + jQuery("#reportId").val() + "&startDate=" + jQuery("#startDate").val() + "&endDate=" + jQuery("#endDate").val()+"&outputType="+jQuery("#outputType").val();
-					}
+					var str=window.location.href;
+					var n=str.split("//");
+					var s=n[1].split('/');
+					var t=s[0];
+					window.location.href = openmrsContextPath + "/module/sdmxhddataexport/downloadExecutedReport.form?reportId=" + jQuery("#reportId").val() + "&startDate=" + jQuery("#startDate").val() + "&endDate=" + jQuery("#endDate").val()+"&outputType="+jQuery("#outputType").val()+"&url="+t;
 					// var data = jQuery.ajax(
 							// {
 								// type:"GET"
