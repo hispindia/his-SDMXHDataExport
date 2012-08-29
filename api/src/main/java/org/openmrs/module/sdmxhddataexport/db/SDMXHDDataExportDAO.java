@@ -108,5 +108,7 @@ public interface SDMXHDDataExportDAO {
 	public ReportDataElement getReportDataElement(Integer reportId,Integer dataElementId) throws DAOException;
 	
 	public Integer executeQuery(String query,String startDate, String endDate) throws DAOException;
+
+	public DataElement getDataElementByCode1(String code);
 	
 }

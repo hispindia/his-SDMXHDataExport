@@ -53,7 +53,10 @@ public interface SDMXHDDataExportService extends OpenmrsService {
 	public DataElement getDataElementByName(String name) throws APIException;
 	
 	public boolean getDataElementByCode(String code) throws APIException;
+	
+	public DataElement getDataElementByCode1(String code) throws APIException;
 
+	
 	@Transactional(readOnly=false)
 	public void deleteDataElement(DataElement dataElement) throws APIException;
 	

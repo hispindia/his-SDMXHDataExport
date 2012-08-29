@@ -223,6 +223,12 @@ public class SDMXHDDataExportServiceImpl  extends BaseOpenmrsService implements 
 		return dao.getReportDataElement(reportId, dataElementId);
 	}
 
+	@Override
+    public DataElement getDataElementByCode1(String code) throws APIException {
+	    // TODO Auto-generated method stub
+		return dao.getDataElementByCode1(code);
+    }
+
 	
 	
 	

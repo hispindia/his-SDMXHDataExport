@@ -377,6 +377,14 @@ public class HibernateSDMXHDDataExportDAO  implements SDMXHDDataExportDAO{
 		System.out.println("abca".replaceFirst("a", "x").replaceFirst("a", "y"));
 	}
 
+	@Override
+    public DataElement getDataElementByCode1(String code) {
+		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(DataElement.class);
+		criteria.add(Restrictions.eq("code", code));
+		DataElement dataElement = (DataElement) criteria.uniqueResult();
+	    return dataElement;
+    }
+
 	
 
 
