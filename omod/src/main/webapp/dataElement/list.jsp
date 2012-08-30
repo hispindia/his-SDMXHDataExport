@@ -120,7 +120,7 @@ Please select a file to upload :
 		
 		<td>${dataElement.code }</td>
 		
-		<td><a href="#" onclick="ACT.go('dataElement.form?dataElementId=${ dataElement.id}');">${dataElement.name}</a> </td>
+		<td><a href="#" onclick="ACT.go('dataElementEdit.form?dataElementId=${ dataElement.id}');">${dataElement.name}</a> </td>
 		<td><openmrs:formatDate date="${dataElement.createdOn}" type="textbox"/></td>
 		<td>${dataElement.sqlQuery }</td>
 		<td>${dataElement.createdBy}</td>

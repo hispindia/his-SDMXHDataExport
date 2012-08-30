@@ -87,13 +87,46 @@ if(result == -1)
     		error.reject("sdmxhddataexport.dataElement.code.existed");
 
     	}
-    	
-    	
-
-    	
+  	
     	
     }
     
+    
+    public void validateEdit(Object command, Errors error) {
+    	DataElement dataElement = (DataElement) command;
+    	
+    	if( StringUtils.isBlank(dataElement.getName())){
+    		error.reject("sdmxhddataexport.dataElement.name.required");
+    	}
+    	if( StringUtils.isBlank(dataElement.getCode())){
+    		error.reject("sdmxhddataexport.dataElement.code.required");
+    	}
+    	SDMXHDDataExportService inventoryService = Context.getService(SDMXHDDataExportService.class);
+    	
+    	if(dataElement.getSqlQuery() =="")
+    	{
+    		error.reject("sdmxhddataexport.dataElement.sql.required");
+    	}
+    	
+    	else		
+    		{
+    		String sql = dataElement.getSqlQuery();
+    		Integer result = inventoryService.executeQuery(sql, "01/07/2012", "01/07/2012");
+    		if(result == -1)
+    		{
+			error.reject("sdmxhddataexport.dataElement.sql.wrong");
+    		}
+    }
+    	DataElement check = inventoryService.getDataElementByCode1(dataElement.getCode());
+    	if (check!=null)
+    		System.out.println(dataElement.getId() + "--" + check.getId());
+    	if(dataElement.getId().intValue()!= check.getId().intValue())
+      	{
+    		System.out.println(dataElement.getId() + "-98908|-" + check.getId());	
+    		error.reject("sdmxhddataexport.dataElement.code.existed");
+    	}
+    	
+}
     
     
     
